@@ -2,7 +2,7 @@ const wDistance = 0.3
 const aDistance = 0.15
 const wColor = 'warning.light'
 const aLColor = 'success.light'
-const aSColor = '.error.light'
+const aSColor = 'error.light'
 
 export function calcDistance(lastPrice, entry, type) {
   const numerator = type === 'long' ? lastPrice - entry : entry - lastPrice
