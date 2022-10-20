@@ -1,0 +1,23 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+ul, li {
+  list-style: none;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+body {
+  background-image: radial-gradient(circle, #1a76d2, #7591da, #a7afe1, #d0cfe9, #f2f2f2);
+}
