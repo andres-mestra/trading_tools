@@ -1,22 +1,38 @@
 import { useEffect, useRef, useState } from 'react'
-import { Box, Typography, Paper, Stack } from '@mui/material'
+import { Box, Typography, Paper, Stack, Button } from '@mui/material'
 import { FormAddCoin } from '../../components/FormAddCoin'
 import { TableCoins } from '../../components/TableCoins'
 
+import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { socketURL } from '../../helpers/urls'
 import { calcDistance } from '../../helpers/distanceUtils'
 
 export function Home() {
   const socketsRef = useRef([])
-  const [coins, setCoins] = useState([])
+  const [coinsStorage, setCoinsStorage] = useLocalStorage('coins_data', [])
+  const [coins, setCoins] = useState([...coinsStorage])
   const [nCoins, setNCoins] = useState(coins.length)
 
   const onAddCoin = (newCoin) => {
-    setCoins((prevCoins) => [...prevCoins, newCoin])
+    setCoins((prevCoins) => {
+      const coinsList = [...prevCoins, newCoin]
+
+      setCoinsStorage(coinsList)
+      return coinsList
+    })
   }
 
   const onDeleteCoin = (symbol) => {
-    setCoins((prevCoins) => prevCoins.filter((coin) => coin.symbol !== symbol))
+    console.log('DELETE')
+    setCoins((prevCoins) => {
+      const coinsList = prevCoins.filter((coin) => coin.symbol !== symbol)
+      setCoinsStorage(coinsList)
+      return coinsList
+    })
+  }
+
+  const onSaveStorageData = () => {
+    setCoinsStorage(coins)
   }
 
   const generateSocket = () => {
@@ -31,33 +47,35 @@ export function Home() {
         setCoins((preState) => {
           const newState = [...preState]
           const coin = newState[index]
-          const { shortPoints, longPoints } = coin
+          if (coin) {
+            const { shortPoints, longPoints } = coin
 
-          //LONG
-          longPoints.distanceEntry = calcDistance(
-            lastPrice,
-            longPoints.entry,
-            'long'
-          )
-          longPoints.distanceBuyBack = calcDistance(
-            lastPrice,
-            longPoints.buyBack,
-            'long'
-          )
+            //LONG
+            longPoints.distanceEntry = calcDistance(
+              lastPrice,
+              longPoints.entry,
+              'long'
+            )
+            longPoints.distanceBuyBack = calcDistance(
+              lastPrice,
+              longPoints.buyBack,
+              'long'
+            )
 
-          //SHORT
-          shortPoints.distanceEntry = calcDistance(
-            lastPrice,
-            shortPoints.entry,
-            'short'
-          )
-          shortPoints.distanceBuyBack = calcDistance(
-            lastPrice,
-            shortPoints.buyBack,
-            'short'
-          )
+            //SHORT
+            shortPoints.distanceEntry = calcDistance(
+              lastPrice,
+              shortPoints.entry,
+              'short'
+            )
+            shortPoints.distanceBuyBack = calcDistance(
+              lastPrice,
+              shortPoints.buyBack,
+              'short'
+            )
 
-          newState[index] = { ...coin, lastPrice, shortPoints, longPoints }
+            newState[index] = { ...coin, lastPrice, shortPoints, longPoints }
+          }
           return [...newState]
         })
       }
@@ -90,7 +108,16 @@ export function Home() {
     >
       <Stack justifyContent="center">
         <Typography variant="h2">Oraculo</Typography>
-        <FormAddCoin onSubmit={onAddCoin} />
+        <Stack direction="row" justifyContent="space-around">
+          <FormAddCoin onSubmit={onAddCoin} />
+          <Button
+            variant="contained"
+            color="success"
+            onClick={onSaveStorageData}
+          >
+            Save Data
+          </Button>
+        </Stack>
         <Stack direction="row" gap={2} justifyContent="space-between">
           <Stack gap={2}>
             <Typography variant="h3" color="success.light">
