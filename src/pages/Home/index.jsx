@@ -8,47 +8,15 @@ import { calcDistance } from '../../helpers/distanceUtils'
 
 export function Home() {
   const socketsRef = useRef([])
-  const [coins, setCoins] = useState([
-    {
-      symbol: 'btcusdt',
-      lastPrice: 1,
-      longPoints: {
-        entry: 19034,
-        distanceEntry: 1,
-        buyBack: 18941,
-        distanceBuyBack: 1,
-      },
-      shortPoints: {
-        distance: 1,
-        entry: 19284,
-        distanceEntry: 1,
-        buyBack: 19442,
-        distanceBuyBack: 1,
-      },
-    },
-    {
-      symbol: 'maticusdt',
-      lastPrice: 1,
-      longPoints: {
-        distance: 1,
-        entry: 0.8546,
-        distanceEntry: 1,
-        buyBack: 0.842,
-        distanceBuyBack: 1,
-      },
-      shortPoints: {
-        distance: 1,
-        entry: 0.8766,
-        distanceEntry: 1,
-        buyBack: 0.886,
-        distanceBuyBack: 1,
-      },
-    },
-  ])
+  const [coins, setCoins] = useState([])
   const [nCoins, setNCoins] = useState(coins.length)
 
   const onAddCoin = (newCoin) => {
     setCoins((prevCoins) => [...prevCoins, newCoin])
+  }
+
+  const onDeleteCoin = (symbol) => {
+    setCoins((prevCoins) => prevCoins.filter((coin) => coin.symbol !== symbol))
   }
 
   const generateSocket = () => {
@@ -128,7 +96,7 @@ export function Home() {
             <Typography variant="h3" color="success.light">
               Long
             </Typography>
-            <TableCoins coins={coins} type="long" />
+            <TableCoins coins={coins} type="long" onDelete={onDeleteCoin} />
           </Stack>
           <Stack gap={2}>
             <Typography variant="h3" color="error.light">

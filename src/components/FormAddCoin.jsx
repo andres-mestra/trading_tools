@@ -8,14 +8,16 @@ const initialState = {
   symbol: '',
   lastPrice: 1,
   longPoints: {
-    distance: 1,
     entry: 1,
+    distanceEntry: 1,
     buyBack: 1,
+    distanceBuyBack: 1,
   },
   shortPoints: {
-    distance: 1,
     entry: 1,
+    distanceEntry: 1,
     buyBack: 1,
+    distanceBuyBack: 1,
   },
 }
 
@@ -24,7 +26,7 @@ export function FormAddCoin({ onSubmit }) {
 
   const onSymbolChange = (event) => {
     const { value } = event.target
-    setNewCoin((prevCoin) => ({ ...prevCoin, symbol: value }))
+    setNewCoin((prevCoin) => ({ ...prevCoin, symbol: value.toLowerCase() }))
   }
 
   const onPointsChanges = (event, isEntry, type) => {

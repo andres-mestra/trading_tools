@@ -15,7 +15,7 @@ import { sortingCoins } from '../helpers/sortingCoins'
 import { distanceColor } from '../helpers/distanceUtils'
 import { binanceFuture } from '../helpers/urls'
 
-export function TableCoins({ type, coins }) {
+export function TableCoins({ type, coins, onDelete }) {
   const isLong = type === 'long'
   const coinsCopy = structuredClone(coins)
   const coinsSort = sortingCoins(coinsCopy, isLong)
@@ -76,7 +76,7 @@ export function TableCoins({ type, coins }) {
                   <TableCell />
                 )}
                 <TableCell align="right">
-                  <IconButton aria-label="delete">
+                  <IconButton color="error" onClick={() => onDelete(symbol)}>
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>
