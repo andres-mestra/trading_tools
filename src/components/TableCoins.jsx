@@ -53,7 +53,10 @@ export function TableCoins({ type, coins, onDelete }) {
                         {symbol}
                       </Typography>
                     </a>
-                    <Typography variant="caption">
+                    <Typography
+                      variant="caption"
+                      color={ratio > 1.66 && '#d500f9'}
+                    >
                       {ratio.toPrecision(3)}
                     </Typography>
                   </Stack>
