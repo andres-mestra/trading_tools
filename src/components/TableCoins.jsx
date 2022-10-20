@@ -1,4 +1,5 @@
 import {
+  Stack,
   Paper,
   Table,
   IconButton,
@@ -26,10 +27,15 @@ export function TableCoins({ type, coins }) {
         <TableBody>
           {coinsSort.map((coin, index) => {
             const { symbol, lastPrice } = coin
-            const poins = isLong ? coin.longPoints : coin.shortPoints
-            const { entry, buyBack, distanceEntry, distanceBuyBack } = poins
+            const points = isLong ? coin.longPoints : coin.shortPoints
+
+            const { entry, buyBack, distanceEntry, distanceBuyBack } = points
             const distanceEntryString = distanceEntry.toPrecision(3)
             const distanceBuyBackString = distanceBuyBack.toPrecision(3)
+
+            const ratio = isLong
+              ? (coin.shortPoints.entry - entry) / (entry - buyBack)
+              : (entry - coin.longPoints.entry) / (buyBack - entry)
 
             const dColorEntry = distanceColor(distanceEntry, type)
             const dColorBuyBack = distanceColor(distanceBuyBack, type)
@@ -41,9 +47,16 @@ export function TableCoins({ type, coins }) {
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell scope="row">
-                  <a target="_blank" href={url}>
-                    <Typography textTransform="uppercase">{symbol}</Typography>
-                  </a>
+                  <Stack>
+                    <a target="_blank" href={url}>
+                      <Typography textTransform="uppercase">
+                        {symbol}
+                      </Typography>
+                    </a>
+                    <Typography variant="caption">
+                      {ratio.toPrecision(3)}
+                    </Typography>
+                  </Stack>
                 </TableCell>
                 <TableCell align="right">{lastPrice.toPrecision(7)}</TableCell>
                 <TableCell align="right">{entry}</TableCell>

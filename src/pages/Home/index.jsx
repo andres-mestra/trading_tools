@@ -98,9 +98,7 @@ export function Home() {
   }
 
   useEffect(() => {
-    let coinsSockets = []
     if (coins.length) {
-      console.log('Primero')
       socketsRef.current = generateSocket()
     }
     return () => {
@@ -110,7 +108,6 @@ export function Home() {
 
   useEffect(() => {
     if (coins.length !== nCoins) {
-      console.log('Cambio')
       socketsRef.current.map(() => (socket) => socket.close())
       socketsRef.current = []
       socketsRef.current = generateSocket()
