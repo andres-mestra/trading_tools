@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Box, Typography, Paper, Stack, Button } from '@mui/material'
 import { FormAddCoin } from '../../components/FormAddCoin'
 import { TableCoins } from '../../components/TableCoins'
+import { TableCoinsItem } from '../../components/TableCoinsItem'
 
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { socketURL } from '../../helpers/urls'
@@ -23,7 +24,6 @@ export function Home() {
   }
 
   const onDeleteCoin = (symbol) => {
-    console.log('DELETE')
     setCoins((prevCoins) => {
       const coinsList = prevCoins.filter((coin) => coin.symbol !== symbol)
       setCoinsStorage(coinsList)
@@ -123,13 +123,37 @@ export function Home() {
             <Typography variant="h3" color="success.light">
               Long
             </Typography>
-            <TableCoins coins={coins} type="long" onDelete={onDeleteCoin} />
+            <TableCoins
+              coins={coins}
+              type="long"
+              render={(coin, type, isLong, index) => (
+                <TableCoinsItem
+                  key={`${coin.symbol}_${index}`}
+                  type={type}
+                  coin={coin}
+                  isLong={isLong}
+                  onDelete={onDeleteCoin}
+                />
+              )}
+            />
           </Stack>
           <Stack gap={2}>
             <Typography variant="h3" color="error.light">
               Short
             </Typography>
-            <TableCoins coins={coins} type="short" />
+            <TableCoins
+              coins={coins}
+              type="short"
+              render={(coin, type, isLong, index) => (
+                <TableCoinsItem
+                  key={`${coin.symbol}_${index}`}
+                  type={type}
+                  coin={coin}
+                  isLong={isLong}
+                  onDelete={onDeleteCoin}
+                />
+              )}
+            />
           </Stack>
         </Stack>
       </Stack>
