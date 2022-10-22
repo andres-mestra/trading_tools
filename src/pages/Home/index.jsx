@@ -122,7 +122,12 @@ export function Home() {
       sx={{ margin: '0 auto', height: '100vh', maxWidth: '1400px', p: 3 }}
     >
       <Stack justifyContent="center">
-        <Typography variant="h2">Oraculo</Typography>
+        <Typography
+          variant="h1"
+          sx={{ fontSize: '2.5rem', fontWeight: 'bold' }}
+        >
+          Oraculo
+        </Typography>
         <Stack direction="row" justifyContent="space-around">
           <FormAddCoin
             newCoin={currentCoin}
