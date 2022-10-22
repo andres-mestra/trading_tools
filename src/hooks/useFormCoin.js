@@ -29,7 +29,8 @@ export const useFormCoin = () => {
 
   const onPointsChanges = (event, isEntry, type) => {
     const { value } = event.target
-    const poinValue = Number(value)
+    const poinValue = parseFloat(value)
+
     const keyPoint = type === 'long' ? 'longPoints' : 'shortPoints'
     const keyEntry = isEntry ? 'entry' : 'buyBack'
 

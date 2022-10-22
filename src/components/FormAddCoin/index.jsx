@@ -21,7 +21,7 @@ export function FormAddCoin({ newCoin, onSymbol, onPoints, onSubmit }) {
           size="small"
           label="Entry"
           name="long.entry"
-          inputProps={{ inputMode: 'decimal', pattern: '[0-9]*' }}
+          //inputProps={{ inputMode: 'decimal', pattern: '[0-9]*' }}
           value={longPoints.entry}
           onChange={(event) => onPoints(event, true, 'long')}
         />
