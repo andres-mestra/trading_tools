@@ -1,59 +1,13 @@
-import { useState } from 'react'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
-const initialState = {
-  symbol: '',
-  lastPrice: 1,
-  longPoints: {
-    entry: 1,
-    distanceEntry: 1,
-    buyBack: 1,
-    distanceBuyBack: 1,
-  },
-  shortPoints: {
-    entry: 1,
-    distanceEntry: 1,
-    buyBack: 1,
-    distanceBuyBack: 1,
-  },
-}
-
-export function FormAddCoin({ onSubmit }) {
-  const [newCoin, setNewCoin] = useState({ ...initialState })
-
-  const onSymbolChange = (event) => {
-    const { value } = event.target
-    setNewCoin((prevCoin) => ({ ...prevCoin, symbol: value.toLowerCase() }))
-  }
-
-  const onPointsChanges = (event, isEntry, type) => {
-    const { value } = event.target
-    const poinValue = Number(value)
-    const keyPoint = type === 'long' ? 'longPoints' : 'shortPoints'
-    const keyEntry = isEntry ? 'entry' : 'buyBack'
-
-    setNewCoin((prevCoin) => ({
-      ...prevCoin,
-      [keyPoint]: {
-        ...prevCoin[keyPoint],
-        [keyEntry]: poinValue,
-      },
-    }))
-  }
-
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    onSubmit(newCoin)
-    setNewCoin({ ...initialState })
-  }
-
+export function FormAddCoin({ newCoin, onSymbol, onPoints, onSubmit }) {
   const { symbol, longPoints, shortPoints } = newCoin
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={onSubmit}>
       <Stack
         direction="row"
         gap={2}
@@ -69,7 +23,7 @@ export function FormAddCoin({ onSubmit }) {
               label="Symbol"
               name="symbol"
               value={symbol}
-              onChange={onSymbolChange}
+              onChange={onSymbol}
             />
             <Button type="submit" variant="contained">
               Add
@@ -86,7 +40,7 @@ export function FormAddCoin({ onSubmit }) {
               label="Entry"
               name="long.entry"
               value={longPoints.entry}
-              onChange={(event) => onPointsChanges(event, true, 'long')}
+              onChange={(event) => onPoints(event, true, 'long')}
             />
             <TextField
               required
@@ -95,7 +49,7 @@ export function FormAddCoin({ onSubmit }) {
               label="Buy back"
               name="long.buyBack"
               value={longPoints.buyBack}
-              onChange={(event) => onPointsChanges(event, false, 'long')}
+              onChange={(event) => onPoints(event, false, 'long')}
             />
           </Stack>
         </Stack>
@@ -109,7 +63,7 @@ export function FormAddCoin({ onSubmit }) {
               label="Entry"
               name="short.entry"
               value={shortPoints.entry}
-              onChange={(event) => onPointsChanges(event, true, 'short')}
+              onChange={(event) => onPoints(event, true, 'short')}
             />
             <TextField
               required
@@ -118,7 +72,7 @@ export function FormAddCoin({ onSubmit }) {
               label="Buy back"
               name="short.buyBack"
               value={shortPoints.buyBack}
-              onChange={(event) => onPointsChanges(event, false, 'short')}
+              onChange={(event) => onPoints(event, false, 'short')}
             />
           </Stack>
         </Stack>
