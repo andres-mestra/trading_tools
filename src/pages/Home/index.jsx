@@ -44,10 +44,6 @@ export function Home() {
     onSetCurrentCoin(coin)
   }
 
-  const onSaveStorageData = () => {
-    setCoinsStorage(coins)
-  }
-
   const handleSubmitForm = (event) => {
     event.preventDefault()
     onAddCoin(currentCoin)
@@ -134,13 +130,6 @@ export function Home() {
             onPoints={onPointsChanges}
             onSubmit={handleSubmitForm}
           />
-          <Button
-            variant="contained"
-            color="success"
-            onClick={onSaveStorageData}
-          >
-            Save Data
-          </Button>
         </Stack>
         <Stack direction="row" gap={2} justifyContent="space-between">
           <Stack gap={2}>
