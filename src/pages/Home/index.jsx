@@ -5,6 +5,7 @@ import { TableCoins } from '../../components/TableCoins'
 import { TableCoinsItem } from '../../components/TableCoinsItem'
 
 import { useLocalStorage } from '../../hooks/useLocalStorage'
+import { useFormCoin } from '../../hooks/useFormCoin'
 import { socketURL } from '../../helpers/urls'
 import { calcDistance } from '../../helpers/distanceUtils'
 
@@ -13,11 +14,19 @@ export function Home() {
   const [coinsStorage, setCoinsStorage] = useLocalStorage('coins_data', [])
   const [coins, setCoins] = useState([...coinsStorage])
   const [nCoins, setNCoins] = useState(coins.length)
+  const {
+    newCoin: currentCoin,
+    onSetNewCoin: onSetCurrentCoin,
+    onSymbolChange,
+    onPointsChanges,
+    onResetForm,
+  } = useFormCoin()
 
   const onAddCoin = (newCoin) => {
     setCoins((prevCoins) => {
-      const coinsList = [...prevCoins, newCoin]
-
+      let coinsList = structuredClone(prevCoins)
+      coinsList = coinsList.filter((coin) => coin.symbol !== newCoin.symbol)
+      coinsList = [...coinsList, newCoin]
       setCoinsStorage(coinsList)
       return coinsList
     })
@@ -31,8 +40,18 @@ export function Home() {
     })
   }
 
+  const onEditCoin = (coin) => {
+    onSetCurrentCoin(coin)
+  }
+
   const onSaveStorageData = () => {
     setCoinsStorage(coins)
+  }
+
+  const handleSubmitForm = (event) => {
+    event.preventDefault()
+    onAddCoin(currentCoin)
+    onResetForm()
   }
 
   const generateSocket = () => {
@@ -109,7 +128,12 @@ export function Home() {
       <Stack justifyContent="center">
         <Typography variant="h2">Oraculo</Typography>
         <Stack direction="row" justifyContent="space-around">
-          <FormAddCoin onSubmit={onAddCoin} />
+          <FormAddCoin
+            newCoin={currentCoin}
+            onSymbol={onSymbolChange}
+            onPoints={onPointsChanges}
+            onSubmit={handleSubmitForm}
+          />
           <Button
             variant="contained"
             color="success"
@@ -133,6 +157,7 @@ export function Home() {
                   coin={coin}
                   isLong={isLong}
                   onDelete={onDeleteCoin}
+                  onEdit={() => onEditCoin(coin)}
                 />
               )}
             />
@@ -151,6 +176,7 @@ export function Home() {
                   coin={coin}
                   isLong={isLong}
                   onDelete={onDeleteCoin}
+                  onEdit={() => onEditCoin(coin)}
                 />
               )}
             />

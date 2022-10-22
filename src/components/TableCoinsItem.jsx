@@ -6,11 +6,12 @@ import {
   Typography,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
+import ModeEditIcon from '@mui/icons-material/ModeEdit'
 
 import { distanceColor } from '../helpers/distanceUtils'
 import { binanceFuture } from '../helpers/urls'
 
-export function TableCoinsItem({ coin, type, isLong, onDelete }) {
+export function TableCoinsItem({ coin, type, isLong, onDelete, onEdit }) {
   const { symbol, lastPrice } = coin
   const points = isLong ? coin.longPoints : coin.shortPoints
 
@@ -52,6 +53,9 @@ export function TableCoinsItem({ coin, type, isLong, onDelete }) {
         <TableCell />
       )}
       <TableCell align="right">
+        <IconButton color="primary" onClick={onEdit}>
+          <ModeEditIcon />
+        </IconButton>
         <IconButton color="error" onClick={() => onDelete(symbol)}>
           <DeleteIcon />
         </IconButton>
