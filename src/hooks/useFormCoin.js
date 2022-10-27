@@ -5,15 +5,15 @@ const initialState = {
   lastPrice: 1,
   longPoints: {
     entry: 1,
-    distanceEntry: 1,
     buyBack: 1,
-    distanceBuyBack: 1,
+    bounces: 0,
+    distanceEntry: 1,
   },
   shortPoints: {
     entry: 1,
-    distanceEntry: 1,
     buyBack: 1,
-    distanceBuyBack: 1,
+    bounces: 0,
+    distanceEntry: 1,
   },
 }
 
