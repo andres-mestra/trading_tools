@@ -15,16 +15,14 @@ export function TableCoinsItem({ coin, type, isLong, onDelete, onEdit }) {
   const { symbol, lastPrice } = coin
   const points = isLong ? coin.longPoints : coin.shortPoints
 
-  const { entry, buyBack, distanceEntry, distanceBuyBack } = points
+  const { entry, buyBack, distanceEntry } = points
   const distanceEntryString = distanceEntry.toPrecision(3)
-  const distanceBuyBackString = distanceBuyBack.toPrecision(3)
 
   const ratio = isLong
     ? (coin.shortPoints.entry - entry) / (entry - buyBack)
     : (entry - coin.longPoints.entry) / (buyBack - entry)
 
-  const dColorEntry = distanceColor(distanceEntry, type)
-  const dColorBuyBack = distanceColor(distanceBuyBack, type)
+  const colorEntry = distanceColor(distanceEntry, type)
   const url = `${binanceFuture}/${symbol}`
 
   return (
@@ -42,16 +40,9 @@ export function TableCoinsItem({ coin, type, isLong, onDelete, onEdit }) {
       <TableCell align="right">{lastPrice.toPrecision(7)}</TableCell>
       <TableCell align="right">{entry}</TableCell>
       <TableCell align="right">
-        <Typography color={dColorEntry}>{distanceEntryString}</Typography>
+        <Typography color={colorEntry}>{distanceEntryString}</Typography>
       </TableCell>
       <TableCell align="right">{buyBack}</TableCell>
-      {distanceEntry < 0 ? (
-        <TableCell align="right">
-          <Typography color={dColorBuyBack}>{distanceBuyBackString}</Typography>
-        </TableCell>
-      ) : (
-        <TableCell />
-      )}
       <TableCell align="right">
         <IconButton color="primary" onClick={onEdit}>
           <ModeEditIcon />

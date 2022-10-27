@@ -16,7 +16,6 @@ export const TableHeaderCoins = memo(({ isLong = true }) => (
         </Typography>
       </TableCell>
       <TableCell align="right">BuyBack</TableCell>
-      <TableCell align="right">Dist(%)</TableCell>
       <TableCell align="right">Acciones</TableCell>
     </TableRow>
   </TableHead>
