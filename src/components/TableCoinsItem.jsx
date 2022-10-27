@@ -15,7 +15,7 @@ export function TableCoinsItem({ coin, type, isLong, onDelete, onEdit }) {
   const { symbol, lastPrice } = coin
   const points = isLong ? coin.longPoints : coin.shortPoints
 
-  const { entry, buyBack, distanceEntry } = points
+  const { entry, buyBack, distanceEntry, bounces } = points
   const distanceEntryString = distanceEntry.toPrecision(3)
 
   const ratio = isLong
@@ -40,7 +40,12 @@ export function TableCoinsItem({ coin, type, isLong, onDelete, onEdit }) {
       <TableCell align="right">{lastPrice.toPrecision(7)}</TableCell>
       <TableCell align="right">{entry}</TableCell>
       <TableCell align="right">
-        <Typography color={colorEntry}>{distanceEntryString}</Typography>
+        <Stack>
+          <Typography color={colorEntry} fontWeight="bold">
+            {distanceEntryString}
+          </Typography>
+          <Typography variant="caption">{bounces}</Typography>
+        </Stack>
       </TableCell>
       <TableCell align="right">{buyBack}</TableCell>
       <TableCell align="right">

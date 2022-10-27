@@ -8,6 +8,7 @@ import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { useFormCoin } from '../../hooks/useFormCoin'
 import { socketURL } from '../../helpers/urls'
 import { calcDistance } from '../../helpers/distanceUtils'
+import { calcBounces } from '../../helpers/calcBounces'
 
 export function Home() {
   const socketsRef = useRef([])
@@ -72,10 +73,9 @@ export function Home() {
               longPoints.entry,
               'long'
             )
-            longPoints.distanceBuyBack = calcDistance(
-              lastPrice,
-              longPoints.buyBack,
-              'long'
+            longPoints.bounces = calcBounces(
+              longPoints.bounces,
+              longPoints.distanceEntry
             )
 
             //SHORT
@@ -84,10 +84,9 @@ export function Home() {
               shortPoints.entry,
               'short'
             )
-            shortPoints.distanceBuyBack = calcDistance(
-              lastPrice,
-              shortPoints.buyBack,
-              'short'
+            shortPoints.bounces = calcBounces(
+              shortPoints.bounces,
+              shortPoints.distanceEntry
             )
 
             newState[index] = { ...coin, lastPrice, shortPoints, longPoints }
