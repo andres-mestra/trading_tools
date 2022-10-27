@@ -11,6 +11,7 @@ import { calcDistance } from '../../helpers/distanceUtils'
 
 export function Home() {
   const socketsRef = useRef([])
+  const [openForm, setOpenForm] = useState(false)
   const [coinsStorage, setCoinsStorage] = useLocalStorage('coins_data', [])
   const [coins, setCoins] = useState([...coinsStorage])
   const [nCoins, setNCoins] = useState(coins.length)
@@ -42,10 +43,10 @@ export function Home() {
 
   const onEditCoin = (coin) => {
     onSetCurrentCoin(coin)
+    setOpenForm(true)
   }
 
-  const handleSubmitForm = (event) => {
-    event.preventDefault()
+  const handleSubmitForm = () => {
     onAddCoin(currentCoin)
     onResetForm()
   }
@@ -122,18 +123,26 @@ export function Home() {
       sx={{ margin: '0 auto', height: '100vh', maxWidth: '1400px', p: 3 }}
     >
       <Stack justifyContent="center">
-        <Typography
-          variant="h1"
-          sx={{ fontSize: '2.5rem', fontWeight: 'bold' }}
-        >
-          Oraculo
-        </Typography>
+        <Stack direction="row" gap={2}>
+          <Typography
+            variant="h1"
+            sx={{ fontSize: '2.5rem', fontWeight: 'bold', marginRight: '2rem' }}
+          >
+            Oraculo
+          </Typography>
+          <Button variant="contained" onClick={() => setOpenForm(true)}>
+            Add Coin
+          </Button>
+          <Button variant="contained">Run Order Book</Button>
+        </Stack>
         <Stack direction="row" justifyContent="space-around">
           <FormAddCoin
+            open={openForm}
             newCoin={currentCoin}
             onSymbol={onSymbolChange}
             onPoints={onPointsChanges}
             onSubmit={handleSubmitForm}
+            onClose={() => setOpenForm(false)}
           />
         </Stack>
         <Stack direction="row" gap={2} justifyContent="space-between">
