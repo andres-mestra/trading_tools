@@ -23,7 +23,7 @@ export function TableCoinsItem({ coin, type, isLong, onDelete, onEdit }) {
     : (entry - coin.longPoints.entry) / (buyBack - entry)
 
   const colorEntry = distanceColor(distanceEntry, type)
-  const url = `${binanceFuture}/${symbol}`
+  const url = `${binanceFuture}/${symbol}usdt`
 
   return (
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
