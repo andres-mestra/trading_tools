@@ -18,6 +18,7 @@ const initialState = {
 }
 
 export const useFormCoin = () => {
+  const [isAddCoin, setIsAddCoin] = useState(true)
   const [newCoin, setNewCoin] = useState({ ...initialState })
 
   const onSetNewCoin = (coin) => setNewCoin((prev) => ({ ...prev, ...coin }))
@@ -39,11 +40,20 @@ export const useFormCoin = () => {
       [keyPoint]: {
         ...prevCoin[keyPoint],
         [keyEntry]: poinValue,
+        bounces: 0,
       },
     }))
   }
 
   const onResetForm = () => setNewCoin({ ...initialState })
 
-  return { newCoin, onSetNewCoin, onSymbolChange, onPointsChanges, onResetForm }
+  return {
+    isAddCoin,
+    newCoin,
+    onSetNewCoin,
+    onSymbolChange,
+    onPointsChanges,
+    onResetForm,
+    setIsAddCoin,
+  }
 }
