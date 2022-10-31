@@ -4,14 +4,16 @@ import { FormAddCoin } from '../../components/FormAddCoin'
 import { TableCoins } from '../../components/TableCoins'
 import { TableCoinsItem } from '../../components/TableCoinsItem'
 
-import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { useFormCoin } from '../../hooks/useFormCoin'
+import { useOrderBook } from '../../hooks/useOrderBook'
+import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { socketURL } from '../../helpers/urls'
 import { calcDistance } from '../../helpers/distanceUtils'
 import { calcBounces } from '../../helpers/calcBounces'
 
 export function Home() {
   const socketsRef = useRef([])
+  const [getEntryPoints] = useOrderBook()
   const [openForm, setOpenForm] = useState(false)
   const [coinsStorage, setCoinsStorage] = useLocalStorage('coins_data', [])
   const [coins, setCoins] = useState([...coinsStorage])
@@ -19,19 +21,41 @@ export function Home() {
   const {
     newCoin: currentCoin,
     onSetNewCoin: onSetCurrentCoin,
+    isAddCoin,
     onSymbolChange,
     onPointsChanges,
     onResetForm,
+    setIsAddCoin,
   } = useFormCoin()
 
-  const onAddCoin = (newCoin) => {
+  const onAddCoin = async (newCoin) => {
+    const { symbol, longPoints, shortPoints } = newCoin
+
+    const points = isAddCoin
+      ? await getEntryPoints(symbol)
+      : { longPoints, shortPoints }
+
     setCoins((prevCoins) => {
       let coinsList = structuredClone(prevCoins)
       coinsList = coinsList.filter((coin) => coin.symbol !== newCoin.symbol)
-      coinsList = [...coinsList, newCoin]
+      coinsList = [
+        ...coinsList,
+        {
+          ...newCoin,
+          longPoints: {
+            ...longPoints,
+            ...points.longPoints,
+          },
+          shortPoints: {
+            ...shortPoints,
+            ...points.shortPoints,
+          },
+        },
+      ]
       setCoinsStorage(coinsList)
       return coinsList
     })
+    setIsAddCoin(false)
   }
 
   const onDeleteCoin = (symbol) => {
@@ -43,8 +67,19 @@ export function Home() {
   }
 
   const onEditCoin = (coin) => {
+    setIsAddCoin(false)
     onSetCurrentCoin(coin)
     setOpenForm(true)
+  }
+
+  const handleAddCoin = () => {
+    setOpenForm(true)
+    setIsAddCoin(true)
+  }
+
+  const handleCloseForm = () => {
+    setOpenForm(false)
+    setIsAddCoin(true)
   }
 
   const handleSubmitForm = () => {
@@ -55,7 +90,7 @@ export function Home() {
   const generateSocket = () => {
     return coins.map((data, index) => {
       const { symbol } = data
-      const socket = new WebSocket(`${socketURL}=${symbol}@markPrice@1s`)
+      const socket = new WebSocket(`${socketURL}=${symbol}usdt@markPrice@1s`)
       socket.onmessage = function (event) {
         const { data: resp } = JSON.parse(event.data)
         let { p: lastPrice } = resp
@@ -129,7 +164,7 @@ export function Home() {
           >
             Oraculo
           </Typography>
-          <Button variant="contained" onClick={() => setOpenForm(true)}>
+          <Button variant="contained" onClick={handleAddCoin}>
             Add Coin
           </Button>
           <Button variant="contained">Run Order Book</Button>
@@ -137,11 +172,12 @@ export function Home() {
         <Stack direction="row" justifyContent="space-around">
           <FormAddCoin
             open={openForm}
+            isAdd={isAddCoin}
             newCoin={currentCoin}
             onSymbol={onSymbolChange}
             onPoints={onPointsChanges}
             onSubmit={handleSubmitForm}
-            onClose={() => setOpenForm(false)}
+            onClose={handleCloseForm}
           />
         </Stack>
         <Stack direction="row" gap={2} justifyContent="space-between">

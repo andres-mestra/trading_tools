@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography'
 
 export function FormAddCoin({
   open,
+  isAdd,
   newCoin,
   onSymbol,
   onPoints,
@@ -22,7 +23,10 @@ export function FormAddCoin({
   }
 
   return (
-    <Backdrop open={open}>
+    <Backdrop
+      open={open}
+      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    >
       <Paper sx={{ p: 2 }}>
         <form onSubmit={handleSubmit}>
           <Stack gap={2}>
@@ -37,51 +41,55 @@ export function FormAddCoin({
               value={symbol}
               onChange={onSymbol}
             />
-            <Typography variant="h6">Long points</Typography>
-            <Stack direction="row" gap={2}>
-              <TextField
-                required
-                type="number"
-                size="small"
-                label="Entry"
-                name="long.entry"
-                value={longPoints.entry}
-                onChange={(event) => onPoints(event, true, 'long')}
-              />
-              <TextField
-                required
-                size="small"
-                type="number"
-                label="Buy back"
-                name="long.buyBack"
-                value={longPoints.buyBack}
-                onChange={(event) => onPoints(event, false, 'long')}
-              />
-            </Stack>
-            <Typography variant="h6">Short points</Typography>
-            <Stack direction="row" gap={2}>
-              <TextField
-                required
-                size="small"
-                type="number"
-                label="Entry"
-                name="short.entry"
-                value={shortPoints.entry}
-                onChange={(event) => onPoints(event, true, 'short')}
-              />
+            {!isAdd && (
+              <>
+                <Typography variant="h6">Long points</Typography>
+                <Stack direction="row" gap={2}>
+                  <TextField
+                    required
+                    type="number"
+                    size="small"
+                    label="Entry"
+                    name="long.entry"
+                    value={longPoints.entry}
+                    onChange={(event) => onPoints(event, true, 'long')}
+                  />
+                  <TextField
+                    required
+                    size="small"
+                    type="number"
+                    label="Buy back"
+                    name="long.buyBack"
+                    value={longPoints.buyBack}
+                    onChange={(event) => onPoints(event, false, 'long')}
+                  />
+                </Stack>
+                <Typography variant="h6">Short points</Typography>
+                <Stack direction="row" gap={2}>
+                  <TextField
+                    required
+                    size="small"
+                    type="number"
+                    label="Entry"
+                    name="short.entry"
+                    value={shortPoints.entry}
+                    onChange={(event) => onPoints(event, true, 'short')}
+                  />
 
-              <TextField
-                required
-                size="small"
-                type="number"
-                label="Buy back"
-                name="short.buyBack"
-                value={shortPoints.buyBack}
-                onChange={(event) => onPoints(event, false, 'short')}
-              />
-            </Stack>
+                  <TextField
+                    required
+                    size="small"
+                    type="number"
+                    label="Buy back"
+                    name="short.buyBack"
+                    value={shortPoints.buyBack}
+                    onChange={(event) => onPoints(event, false, 'short')}
+                  />
+                </Stack>
+              </>
+            )}
             <Button type="submit" variant="contained">
-              Add
+              {isAdd ? 'Add' : 'Edit'}
             </Button>
             <Button color="error" onClick={onClose}>
               Cerrar
