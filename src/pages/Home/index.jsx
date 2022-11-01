@@ -58,6 +58,11 @@ export function Home() {
     setIsAddCoin(false)
   }
 
+  const onUpdatePoints = async (coin) => {
+    setIsAddCoin(true)
+    onAddCoin(coin)
+  }
+
   const onDeleteCoin = (symbol) => {
     setCoins((prevCoins) => {
       const coinsList = prevCoins.filter((coin) => coin.symbol !== symbol)
@@ -196,6 +201,7 @@ export function Home() {
                   isLong={isLong}
                   onDelete={onDeleteCoin}
                   onEdit={() => onEditCoin(coin)}
+                  onUpdate={() => onUpdatePoints(coin)}
                 />
               )}
             />
