@@ -221,6 +221,7 @@ export function Home() {
                   isLong={isLong}
                   onDelete={onDeleteCoin}
                   onEdit={() => onEditCoin(coin)}
+                  onUpdate={() => onUpdatePoints(coin)}
                 />
               )}
             />
