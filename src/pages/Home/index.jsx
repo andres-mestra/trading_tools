@@ -159,7 +159,12 @@ export function Home() {
   return (
     <Box
       component={Paper}
-      sx={{ margin: '0 auto', height: '100vh', maxWidth: '1400px', p: 3 }}
+      sx={{
+        margin: '0 auto',
+        minHeight: '100vh',
+        maxWidth: '1400px',
+        p: 3,
+      }}
     >
       <Stack justifyContent="center">
         <Stack direction="row" gap={2}>
@@ -172,19 +177,16 @@ export function Home() {
           <Button variant="contained" onClick={handleAddCoin}>
             Add Coin
           </Button>
-          <Button variant="contained">Run Order Book</Button>
         </Stack>
-        <Stack direction="row" justifyContent="space-around">
-          <FormAddCoin
-            open={openForm}
-            isAdd={isAddCoin}
-            newCoin={currentCoin}
-            onSymbol={onSymbolChange}
-            onPoints={onPointsChanges}
-            onSubmit={handleSubmitForm}
-            onClose={handleCloseForm}
-          />
-        </Stack>
+        <FormAddCoin
+          open={openForm}
+          isAdd={isAddCoin}
+          newCoin={currentCoin}
+          onSymbol={onSymbolChange}
+          onPoints={onPointsChanges}
+          onSubmit={handleSubmitForm}
+          onClose={handleCloseForm}
+        />
         <Stack direction="row" gap={2} justifyContent="space-between">
           <Stack gap={2}>
             <Typography variant="h3" color="success.light">

@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import ModeEditIcon from '@mui/icons-material/ModeEdit'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 
+import { useMediaQueryMd } from '../hooks/useMediaQueryMd'
 import { distanceColor } from '../helpers/distanceUtils'
 import { binanceFuture } from '../helpers/urls'
 
@@ -20,6 +21,7 @@ export function TableCoinsItem({
   onEdit,
   onUpdate,
 }) {
+  const matches = useMediaQueryMd()
   const { symbol, lastPrice } = coin
   const points = isLong ? coin.longPoints : coin.shortPoints
 
@@ -32,6 +34,8 @@ export function TableCoinsItem({
 
   const colorEntry = distanceColor(distanceEntry, type)
   const url = `${binanceFuture}/${symbol}usdt`
+
+  const actionsHidden = matches && type === 'short'
 
   return (
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -56,17 +60,23 @@ export function TableCoinsItem({
         </Stack>
       </TableCell>
       <TableCell align="right">{buyBack}</TableCell>
-      <TableCell align="right">
-        <IconButton color="primary" onClick={onEdit}>
-          <ModeEditIcon />
-        </IconButton>
-        <IconButton color="error" onClick={() => onDelete(symbol)}>
-          <DeleteIcon />
-        </IconButton>
-        <IconButton color="inherit" onClick={onUpdate}>
-          <RestartAltIcon />
-        </IconButton>
-      </TableCell>
+      {!actionsHidden && (
+        <TableCell align="right">
+          <IconButton color="primary" size="small" onClick={onEdit}>
+            <ModeEditIcon />
+          </IconButton>
+          <IconButton
+            color="error"
+            size="small"
+            onClick={() => onDelete(symbol)}
+          >
+            <DeleteIcon />
+          </IconButton>
+          <IconButton color="inherit" size="small" onClick={onUpdate}>
+            <RestartAltIcon />
+          </IconButton>
+        </TableCell>
+      )}
     </TableRow>
   )
 }
