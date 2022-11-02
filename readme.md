@@ -1,6 +1,6 @@
 # Oraculo
 
-Calculo de distancia de puntos de entrada para una operación de trading de futuros
+Calculate approximate entry points based on the order book for a cryptocurrency futures trade, as well as display in real time how far the current price is from the entry point.
 
 ## Web
 
