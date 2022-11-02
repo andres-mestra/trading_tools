@@ -2,6 +2,10 @@
 
 Calculo de distancia de puntos de entrada para una operación de trading de futuros
 
+## Web
+
+https://andres-mestra.github.io/oraculo
+
 ## Install dependencies
 
 ```bash
