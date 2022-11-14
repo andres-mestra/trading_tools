@@ -1,5 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
-import { Box, Typography, Paper, Stack, Button } from '@mui/material'
+import {
+  Box,
+  Typography,
+  Paper,
+  Stack,
+  Button,
+  IconButton,
+} from '@mui/material'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import { FormAddCoin } from '../../components/FormAddCoin'
 import { TableCoins } from '../../components/TableCoins'
 import { TableCoinsItem } from '../../components/TableCoinsItem'
@@ -10,6 +19,7 @@ import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { socketURL } from '../../helpers/urls'
 import { calcDistance } from '../../helpers/distanceUtils'
 import { calcBounces } from '../../helpers/calcBounces'
+import { useImportExportJson } from '../../hooks/useImportExportJson'
 
 export function Home() {
   const socketsRef = useRef([])
@@ -17,6 +27,7 @@ export function Home() {
   const [openForm, setOpenForm] = useState(false)
   const [coinsStorage, setCoinsStorage] = useLocalStorage('coins_data', [])
   const [coins, setCoins] = useState([...coinsStorage])
+  const [importJson, exportJson, refInputImport] = useImportExportJson()
   const [nCoins, setNCoins] = useState(coins.length)
   const {
     newCoin: currentCoin,
@@ -75,6 +86,17 @@ export function Home() {
     setIsAddCoin(false)
     onSetCurrentCoin(coin)
     setOpenForm(true)
+  }
+
+  const handleImportPoints = (event) => {
+    importJson(event, (newPoints) => {
+      setCoinsStorage(newPoints)
+      setCoins(newPoints)
+    })
+  }
+
+  const handleExportPoints = () => {
+    exportJson(coinsStorage)
   }
 
   const handleAddCoin = () => {
@@ -174,8 +196,33 @@ export function Home() {
           >
             Oraculo
           </Typography>
-          <Button variant="contained" onClick={handleAddCoin}>
+          <Button variant="contained" size="small" onClick={handleAddCoin}>
             Add Coin
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<CloudDownloadIcon />}
+            onClick={handleExportPoints}
+          >
+            Exportar
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<CloudUploadIcon />}
+            onClick={() => {
+              refInputImport.current && refInputImport.current.click()
+            }}
+          >
+            <label>Importar</label>
+            <input
+              hidden
+              id="importPoints"
+              type="file"
+              accept="application/JSON"
+              ref={refInputImport}
+              onChange={handleImportPoints}
+            />
           </Button>
         </Stack>
         <FormAddCoin
