@@ -152,6 +152,8 @@ export function Home() {
                   dir: 'ltr',
                 })
               }
+            } else if (shortPoints.distanceEntry > 0.5) {
+              shortPoints.notify = false
             }
 
             if (longPoints.distanceEntry < 0.3) {
@@ -162,6 +164,8 @@ export function Home() {
                   dir: 'ltr',
                 })
               }
+            } else if (longPoints.distanceEntry > 0.5) {
+              longPoints.notify = false
             }
 
             newState[index] = { ...coin, lastPrice, shortPoints, longPoints }
