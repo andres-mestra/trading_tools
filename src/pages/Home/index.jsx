@@ -1,12 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import {
-  Box,
-  Typography,
-  Paper,
-  Stack,
-  Button,
-  IconButton,
-} from '@mui/material'
+import { Box, Typography, Paper, Stack, Button } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import { FormAddCoin } from '../../components/FormAddCoin'
@@ -151,12 +144,38 @@ export function Home() {
               shortPoints.distanceEntry
             )
 
+            if (shortPoints.distanceEntry < 0.3) {
+              if (shortPoints?.notify === undefined || !shortPoints?.notify) {
+                shortPoints.notify = true
+                new Notification('Notification', {
+                  body: `SHORT ${coin.symbol.toUpperCase()} !!!!`,
+                  dir: 'ltr',
+                })
+              }
+            }
+
+            if (longPoints.distanceEntry < 0.3) {
+              if (longPoints?.notify === undefined || !longPoints?.notify) {
+                longPoints.notify = true
+                new Notification('Notification', {
+                  body: `LONG ${coin.symbol.toUpperCase()} !!!!`,
+                  dir: 'ltr',
+                })
+              }
+            }
+
             newState[index] = { ...coin, lastPrice, shortPoints, longPoints }
           }
           return [...newState]
         })
       }
       return socket
+    })
+  }
+
+  const handleNotification = () => {
+    Notification.requestPermission().then((result) => {
+      console.log(result)
     })
   }
 
@@ -200,6 +219,7 @@ export function Home() {
             Add Coin
           </Button>
           <Button
+            size="small"
             variant="contained"
             startIcon={<CloudDownloadIcon />}
             onClick={handleExportPoints}
@@ -223,6 +243,9 @@ export function Home() {
               ref={refInputImport}
               onChange={handleImportPoints}
             />
+          </Button>
+          <Button variant="outlined" onClick={handleNotification}>
+            notificar
           </Button>
         </Stack>
         <FormAddCoin
