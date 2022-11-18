@@ -111,65 +111,76 @@ export function Home() {
     return coins.map((data, index) => {
       const { symbol } = data
       const socket = new WebSocket(`${socketURL}=${symbol}usdt@markPrice@1s`)
+
       socket.onmessage = function (event) {
         const { data: resp } = JSON.parse(event.data)
         let { p: lastPrice } = resp
         lastPrice = Number(lastPrice)
+        setCoins((prevState) => {
+          const newState = structuredClone(prevState)
+          const coinIndex = newState.findIndex(
+            (coin) => coin?.symbol === symbol
+          )
 
-        setCoins((preState) => {
-          const newState = [...preState]
-          const coin = newState[index]
-          if (coin) {
-            const { shortPoints, longPoints } = coin
-
-            //LONG
-            longPoints.distanceEntry = calcDistance(
-              lastPrice,
-              longPoints.entry,
-              'long'
-            )
-            longPoints.bounces = calcBounces(
-              longPoints.bounces,
-              longPoints.distanceEntry
-            )
-
-            //SHORT
-            shortPoints.distanceEntry = calcDistance(
-              lastPrice,
-              shortPoints.entry,
-              'short'
-            )
-            shortPoints.bounces = calcBounces(
-              shortPoints.bounces,
-              shortPoints.distanceEntry
-            )
-
-            if (shortPoints.distanceEntry < 0.3) {
-              if (shortPoints?.notify === undefined || !shortPoints?.notify) {
-                shortPoints.notify = true
-                new Notification('Notification', {
-                  body: `SHORT ${coin.symbol.toUpperCase()} !!!!`,
-                  dir: 'ltr',
-                })
-              }
-            } else if (shortPoints.distanceEntry > 0.5) {
-              shortPoints.notify = false
-            }
-
-            if (longPoints.distanceEntry < 0.3) {
-              if (longPoints?.notify === undefined || !longPoints?.notify) {
-                longPoints.notify = true
-                new Notification('Notification', {
-                  body: `LONG ${coin.symbol.toUpperCase()} !!!!`,
-                  dir: 'ltr',
-                })
-              }
-            } else if (longPoints.distanceEntry > 0.5) {
-              longPoints.notify = false
-            }
-
-            newState[index] = { ...coin, lastPrice, shortPoints, longPoints }
+          if (coinIndex === -1) {
+            socket.close()
+            return newState
           }
+
+          const coin = newState[coinIndex]
+          const { shortPoints, longPoints } = coin
+
+          //LONG
+          longPoints.distanceEntry = calcDistance(
+            lastPrice,
+            longPoints.entry,
+            'long'
+          )
+          longPoints.bounces = calcBounces(
+            longPoints.bounces,
+            longPoints.distanceEntry
+          )
+
+          //SHORT
+          shortPoints.distanceEntry = calcDistance(
+            lastPrice,
+            shortPoints.entry,
+            'short'
+          )
+          shortPoints.bounces = calcBounces(
+            shortPoints.bounces,
+            shortPoints.distanceEntry
+          )
+
+          if (
+            shortPoints.distanceEntry >= 0 &&
+            shortPoints.distanceEntry < 0.3
+          ) {
+            if (shortPoints?.notify === undefined || !shortPoints?.notify) {
+              shortPoints.notify = true
+              new Notification('Notification', {
+                body: `SHORT ${coin.symbol.toUpperCase()} !!!!`,
+                dir: 'ltr',
+              })
+            }
+          } else if (shortPoints.distanceEntry > 0.5) {
+            shortPoints.notify = false
+          }
+
+          if (longPoints.distanceEntry >= 0 && longPoints.distanceEntry < 0.3) {
+            if (longPoints?.notify === undefined || !longPoints?.notify) {
+              longPoints.notify = true
+              new Notification('Notification', {
+                body: `LONG ${coin.symbol.toUpperCase()} !!!!`,
+                dir: 'ltr',
+              })
+            }
+          } else if (longPoints.distanceEntry > 0.5) {
+            longPoints.notify = false
+          }
+
+          newState[index] = { ...coin, lastPrice, shortPoints, longPoints }
+
           return [...newState]
         })
       }
@@ -194,7 +205,7 @@ export function Home() {
 
   useEffect(() => {
     if (coins.length !== nCoins) {
-      socketsRef.current.map(() => (socket) => socket.close())
+      socketsRef.current.forEach(() => (socket) => socket.close())
       socketsRef.current = []
       socketsRef.current = generateSocket()
       setNCoins(coins.length)
