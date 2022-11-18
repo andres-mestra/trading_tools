@@ -129,7 +129,7 @@ export function Home() {
   }
 
   const generateSocket = () => {
-    return coins.map((data, index) => {
+    return coins.map((data) => {
       const { symbol } = data
       const socket = new WebSocket(`${socketURL}=${symbol}usdt@markPrice@1s`)
       socket.onmessage = function (event) {
@@ -200,7 +200,7 @@ export function Home() {
             longPoints.notify = false
           }
 
-          newState[index] = { ...coin, lastPrice, shortPoints, longPoints }
+          newState[coinIndex] = { ...coin, lastPrice, shortPoints, longPoints }
 
           return [...newState]
         })
