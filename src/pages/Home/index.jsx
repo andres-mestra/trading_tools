@@ -35,10 +35,7 @@ export function Home() {
 
   const onAddCoin = async (newCoin) => {
     const { symbol, longPoints, shortPoints } = newCoin
-
-    const points = isAddCoin
-      ? await getEntryPoints(symbol)
-      : { longPoints, shortPoints }
+    const points = await getEntryPoints(symbol)
 
     setCoins((prevCoins) => {
       let coinsList = structuredClone(prevCoins)
@@ -63,9 +60,16 @@ export function Home() {
     setIsAddCoin(false)
   }
 
-  const onUpdatePoints = async (coin) => {
-    setIsAddCoin(true)
-    onAddCoin(coin)
+  const onPullCoin = (coin) => {
+    setCoins((prevCoins) => {
+      let coinsList = structuredClone(prevCoins)
+      const coinIndex = coinsList.findIndex((c) => c.symbol === coin.symbol)
+      if (coinIndex === -1) return prevCoins
+
+      coinsList[coinIndex] = { ...coin }
+      setCoinsStorage(coinsList)
+      return coinsList
+    })
   }
 
   const onDeleteCoin = (symbol) => {
@@ -74,6 +78,23 @@ export function Home() {
       setCoinsStorage(coinsList)
       return coinsList
     })
+  }
+
+  const onUpdatePoints = async (coin) => {
+    const { symbol, longPoints, shortPoints } = coin
+    const points = await getEntryPoints(symbol)
+    const newCoin = {
+      ...coin,
+      longPoints: {
+        ...longPoints,
+        ...points.longPoints,
+      },
+      shortPoints: {
+        ...shortPoints,
+        ...points.shortPoints,
+      },
+    }
+    onPullCoin(newCoin)
   }
 
   const onEditCoin = (coin) => {
@@ -94,17 +115,16 @@ export function Home() {
   }
 
   const handleAddCoin = () => {
-    setOpenForm(true)
     setIsAddCoin(true)
+    setOpenForm(true)
   }
 
   const handleCloseForm = () => {
     setOpenForm(false)
-    setIsAddCoin(true)
   }
 
   const handleSubmitForm = () => {
-    onAddCoin(currentCoin)
+    isAddCoin ? onAddCoin(currentCoin) : onPullCoin(currentCoin)
     onResetForm()
   }
 
@@ -112,11 +132,11 @@ export function Home() {
     return coins.map((data, index) => {
       const { symbol } = data
       const socket = new WebSocket(`${socketURL}=${symbol}usdt@markPrice@1s`)
-
       socket.onmessage = function (event) {
         const { data: resp } = JSON.parse(event.data)
         let { p: lastPrice } = resp
         lastPrice = Number(lastPrice)
+
         setCoins((prevState) => {
           const newState = structuredClone(prevState)
           const coinIndex = newState.findIndex(
