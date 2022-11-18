@@ -1,3 +1,4 @@
+import { version } from '../../../package.json'
 import { useEffect, useRef, useState } from 'react'
 import { Box, Typography, Paper, Stack, Button } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
@@ -226,10 +227,12 @@ export function Home() {
         <Stack direction="row" gap={2}>
           <Typography
             variant="h1"
-            sx={{ fontSize: '2.5rem', fontWeight: 'bold', marginRight: '2rem' }}
+            sx={{ fontSize: '2.5rem', fontWeight: 'bold' }}
           >
             Oraculo
+            <Typography variant="caption">v{version}</Typography>
           </Typography>
+
           <Button variant="contained" size="small" onClick={handleAddCoin}>
             Add Coin
           </Button>
