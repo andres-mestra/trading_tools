@@ -173,31 +173,36 @@ export function Home() {
             shortPoints.distanceEntry
           )
 
-          if (
-            shortPoints.distanceEntry >= 0 &&
-            shortPoints.distanceEntry < 0.3
-          ) {
-            if (shortPoints?.notify === undefined || !shortPoints?.notify) {
-              shortPoints.notify = true
-              new Notification('Notification', {
-                body: `SHORT ${coin.symbol.toUpperCase()} !!!!`,
-                dir: 'ltr',
-              })
+          if ('Notification' in window) {
+            if (
+              shortPoints.distanceEntry >= 0 &&
+              shortPoints.distanceEntry < 0.3
+            ) {
+              if (shortPoints?.notify === undefined || !shortPoints?.notify) {
+                shortPoints.notify = true
+                new Notification('Notification', {
+                  body: `SHORT ${coin.symbol.toUpperCase()} !!!!`,
+                  dir: 'ltr',
+                })
+              }
+            } else if (shortPoints.distanceEntry > 0.5) {
+              shortPoints.notify = false
             }
-          } else if (shortPoints.distanceEntry > 0.5) {
-            shortPoints.notify = false
-          }
 
-          if (longPoints.distanceEntry >= 0 && longPoints.distanceEntry < 0.3) {
-            if (longPoints?.notify === undefined || !longPoints?.notify) {
-              longPoints.notify = true
-              new Notification('Notification', {
-                body: `LONG ${coin.symbol.toUpperCase()} !!!!`,
-                dir: 'ltr',
-              })
+            if (
+              longPoints.distanceEntry >= 0 &&
+              longPoints.distanceEntry < 0.3
+            ) {
+              if (longPoints?.notify === undefined || !longPoints?.notify) {
+                longPoints.notify = true
+                new Notification('Notification', {
+                  body: `LONG ${coin.symbol.toUpperCase()} !!!!`,
+                  dir: 'ltr',
+                })
+              }
+            } else if (longPoints.distanceEntry > 0.5) {
+              longPoints.notify = false
             }
-          } else if (longPoints.distanceEntry > 0.5) {
-            longPoints.notify = false
           }
 
           newState[coinIndex] = { ...coin, lastPrice, shortPoints, longPoints }
@@ -210,6 +215,9 @@ export function Home() {
   }
 
   const handleNotification = () => {
+    if (!('Notification' in window))
+      return alert('This browser does not support nitifications.')
+
     Notification.requestPermission().then((result) => {
       console.log(result)
     })
