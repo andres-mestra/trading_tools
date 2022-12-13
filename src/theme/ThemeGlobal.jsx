@@ -1,11 +1,12 @@
-import { useMemo, useState, createContext } from 'react'
+import { useMemo, createContext } from 'react'
 import { Global, css } from '@emotion/react'
 import { ThemeProvider, createTheme, useTheme } from '@mui/material/styles'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} })
 
 export const ThemeGlobal = ({ children }) => {
-  const [mode, setMode] = useState('light')
+  const [mode, setMode] = useLocalStorage('color_mode', 'light')
 
   const colorMode = useMemo(
     () => ({
