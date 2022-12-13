@@ -1,11 +1,12 @@
 import { version } from '../../../package.json'
 import { useEffect, useRef, useState } from 'react'
-import { Box, Typography, Paper, Stack, Button } from '@mui/material'
+import { Box, Typography, Paper, Stack, Button, Container } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import { FormAddCoin } from '../../components/FormAddCoin'
 import { TableCoins } from '../../components/TableCoins'
 import { TableCoinsItem } from '../../components/TableCoinsItem'
+import { ToggleThemeMode } from '../../components/ToggleThemeMode'
 
 import { useFormCoin } from '../../hooks/useFormCoin'
 import { useOrderBook } from '../../hooks/useOrderBook'
@@ -242,110 +243,113 @@ export function Home() {
   }, [coins])
 
   return (
-    <Box
-      component={Paper}
-      sx={{
-        margin: '0 auto',
-        minHeight: '100vh',
-        maxWidth: '1400px',
-        p: 3,
-      }}
-    >
-      <Stack justifyContent="center">
-        <Stack direction="row" gap={2}>
-          <Typography
-            variant="h1"
-            sx={{ fontSize: '2.5rem', fontWeight: 'bold' }}
-          >
-            Oraculo
-            <Typography variant="caption">v{version}</Typography>
-          </Typography>
+    <Box sx={{ width: '100%', bgcolor: 'background.default' }}>
+      <Box
+        component={Paper}
+        sx={{
+          margin: '0 auto',
+          minHeight: '100vh',
+          maxWidth: '1400px',
+          p: 3,
+        }}
+      >
+        <Stack justifyContent="center" flexWrap="wrap">
+          <Stack direction="row" gap={2}>
+            <Typography
+              variant="h1"
+              sx={{ fontSize: '2.5rem', fontWeight: 'bold' }}
+            >
+              Oraculo
+              <Typography variant="caption">v{version}</Typography>
+            </Typography>
 
-          <Button variant="contained" size="small" onClick={handleAddCoin}>
-            Add Coin
-          </Button>
-          <Button
-            size="small"
-            variant="contained"
-            startIcon={<CloudDownloadIcon />}
-            onClick={handleExportPoints}
-          >
-            Exportar
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            startIcon={<CloudUploadIcon />}
-            onClick={() => {
-              refInputImport.current && refInputImport.current.click()
-            }}
-          >
-            <label>Importar</label>
-            <input
-              hidden
-              id="importPoints"
-              type="file"
-              accept="application/JSON"
-              ref={refInputImport}
-              onChange={handleImportPoints}
-            />
-          </Button>
-          <Button variant="outlined" onClick={handleNotification}>
-            notificar
-          </Button>
-        </Stack>
-        <FormAddCoin
-          open={openForm}
-          isAdd={isAddCoin}
-          newCoin={currentCoin}
-          onSymbol={onSymbolChange}
-          onPoints={onPointsChanges}
-          onSubmit={handleSubmitForm}
-          onClose={handleCloseForm}
-        />
-        <Stack direction="row" gap={2} justifyContent="space-between">
-          <Stack gap={2}>
-            <Typography variant="h3" color="success.light">
-              Long
-            </Typography>
-            <TableCoins
-              coins={coins}
-              type="long"
-              render={(coin, type, isLong, index) => (
-                <TableCoinsItem
-                  key={`${coin.symbol}_${index}`}
-                  type={type}
-                  coin={coin}
-                  isLong={isLong}
-                  onDelete={onDeleteCoin}
-                  onEdit={() => onEditCoin(coin)}
-                  onUpdate={() => onUpdatePoints(coin)}
-                />
-              )}
-            />
+            <Button variant="contained" size="small" onClick={handleAddCoin}>
+              Add Coin
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              startIcon={<CloudDownloadIcon />}
+              onClick={handleExportPoints}
+            >
+              Descargar
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<CloudUploadIcon />}
+              onClick={() => {
+                refInputImport.current && refInputImport.current.click()
+              }}
+            >
+              <label>Cargar</label>
+              <input
+                hidden
+                id="importPoints"
+                type="file"
+                accept="application/JSON"
+                ref={refInputImport}
+                onChange={handleImportPoints}
+              />
+            </Button>
+            <Button variant="outlined" onClick={handleNotification}>
+              notificar
+            </Button>
+            <ToggleThemeMode />
           </Stack>
-          <Stack gap={2}>
-            <Typography variant="h3" color="error.light">
-              Short
-            </Typography>
-            <TableCoins
-              coins={coins}
-              type="short"
-              render={(coin, type, isLong, index) => (
-                <TableCoinsItem
-                  key={`${coin.symbol}_${index}`}
-                  type={type}
-                  coin={coin}
-                  isLong={isLong}
-                  onDelete={onDeleteCoin}
-                  onEdit={() => onEditCoin(coin)}
-                  onUpdate={() => onUpdatePoints(coin)}
-                />
-              )}
-            />
+          <FormAddCoin
+            open={openForm}
+            isAdd={isAddCoin}
+            newCoin={currentCoin}
+            onSymbol={onSymbolChange}
+            onPoints={onPointsChanges}
+            onSubmit={handleSubmitForm}
+            onClose={handleCloseForm}
+          />
+          <Stack direction="row" gap={2} justifyContent="space-between">
+            <Stack gap={2}>
+              <Typography variant="h3" color="success.light">
+                Long
+              </Typography>
+              <TableCoins
+                coins={coins}
+                type="long"
+                render={(coin, type, isLong, index) => (
+                  <TableCoinsItem
+                    key={`${coin.symbol}_${index}`}
+                    type={type}
+                    coin={coin}
+                    isLong={isLong}
+                    onDelete={onDeleteCoin}
+                    onEdit={() => onEditCoin(coin)}
+                    onUpdate={() => onUpdatePoints(coin)}
+                  />
+                )}
+              />
+            </Stack>
+            <Stack gap={2}>
+              <Typography variant="h3" color="error.light">
+                Short
+              </Typography>
+              <TableCoins
+                coins={coins}
+                type="short"
+                render={(coin, type, isLong, index) => (
+                  <TableCoinsItem
+                    key={`${coin.symbol}_${index}`}
+                    type={type}
+                    coin={coin}
+                    isLong={isLong}
+                    onDelete={onDeleteCoin}
+                    onEdit={() => onEditCoin(coin)}
+                    onUpdate={() => onUpdatePoints(coin)}
+                  />
+                )}
+              />
+            </Stack>
           </Stack>
         </Stack>
-      </Stack>
+      </Box>
     </Box>
   )
 }

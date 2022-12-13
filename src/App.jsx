@@ -1,7 +1,12 @@
+import { ThemeGlobal } from './theme/ThemeGlobal'
 import { Home } from './pages/Home'
 
 function App() {
-  return <Home />
+  return (
+    <ThemeGlobal>
+      <Home />
+    </ThemeGlobal>
+  )
 }
 
 export default App

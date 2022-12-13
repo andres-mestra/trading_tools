@@ -1,4 +1,5 @@
 import {
+  Link,
   Stack,
   IconButton,
   TableRow,
@@ -41,9 +42,9 @@ export function TableCoinsItem({
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
       <TableCell scope="row">
         <Stack>
-          <a target="_blank" href={url}>
+          <Link target="_blank" href={url}>
             <Typography textTransform="uppercase">{symbol}</Typography>
-          </a>
+          </Link>
           <Typography variant="caption" color={ratio > 1.66 && '#d500f9'}>
             {ratio.toPrecision(3)}
           </Typography>
