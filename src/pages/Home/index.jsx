@@ -1,6 +1,6 @@
 import { version } from '../../../package.json'
-import { useEffect, useRef, useState } from 'react'
-import { Box, Typography, Paper, Stack, Button, Container } from '@mui/material'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Box, Typography, Paper, Stack, Button } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import { FormAddCoin } from '../../components/FormAddCoin'
@@ -14,6 +14,7 @@ import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { socketURL } from '../../helpers/urls'
 import { calcDistance } from '../../helpers/distanceUtils'
 import { calcBounces } from '../../helpers/calcBounces'
+import { deviceDetector } from '../../helpers/deviceDetector'
 import { useImportExportJson } from '../../hooks/useImportExportJson'
 
 export function Home() {
@@ -33,6 +34,8 @@ export function Home() {
     onResetForm,
     setIsAddCoin,
   } = useFormCoin()
+
+  const deviceInfo = useMemo(() => deviceDetector(), [])
 
   const onAddCoin = async (newCoin) => {
     const { symbol, longPoints, shortPoints } = newCoin
@@ -174,10 +177,7 @@ export function Home() {
             shortPoints.distanceEntry
           )
 
-          if (
-            'Notification' in window &&
-            Notification?.permission === 'granted'
-          ) {
+          if ('Notification' in window && !deviceInfo.isMovil) {
             if (
               shortPoints.distanceEntry >= 0 &&
               shortPoints.distanceEntry < 0.3
@@ -219,7 +219,7 @@ export function Home() {
   }
 
   const handleNotification = () => {
-    if (!('Notification' in window))
+    if (!('Notification' in window) && !deviceInfo.isMovil)
       return alert('This browser does not support nitifications.')
 
     Notification.requestPermission().then((result) => {
