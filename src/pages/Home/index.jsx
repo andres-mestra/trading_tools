@@ -174,7 +174,10 @@ export function Home() {
             shortPoints.distanceEntry
           )
 
-          if ('Notification' in window) {
+          if (
+            'Notification' in window &&
+            Notification?.permission === 'granted'
+          ) {
             if (
               shortPoints.distanceEntry >= 0 &&
               shortPoints.distanceEntry < 0.3
