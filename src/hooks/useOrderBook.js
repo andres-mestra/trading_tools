@@ -14,7 +14,7 @@ export const useOrderBook = () => {
 
   async function orderBook(symbol) {
     const resp = await fetch(
-      `https://api.binance.com/api/v3/depth?symbol=${symbol.toUpperCase()}USDT&limit=5000`
+      `https://fapi.binance.com/fapi/v1/depth?symbol=${symbol.toUpperCase()}USDT&limit=1000&weight=20`
     )
     const book = await resp.json()
     return book
@@ -167,6 +167,7 @@ export const useOrderBook = () => {
       sizeIntervalExt,
       type
     )
+
     const buyBackPoint = getEntryPoin(groupsExternal)
 
     //INTERNAL
@@ -178,31 +179,46 @@ export const useOrderBook = () => {
       sizeIntervalInt,
       type
     )
-    const entryShort = getEntryPoin(groupsInternal)
-    return [entryShort, buyBackPoint]
+    const entryLong = getEntryPoin(groupsInternal)
+
+    return [entryLong, buyBackPoint]
   }
 
   async function getPoints(symbol) {
-    if (isGetData.current) return
-    isGetData.current = true
+    try {
+      if (isGetData.current) return undefined
+      isGetData.current = true
 
-    let price = await getCurrentPrice(symbol)
-    price = parseFloat(price)
-    let { asks: short, bids: long } = await orderBook(symbol)
+      let price = await getCurrentPrice(symbol)
+      price = parseFloat(price)
+      let { asks: short, bids: long } = await orderBook(symbol)
 
-    const [entryShort, buyBackShort] = getShortPoins(price, short)
-    const [entryLong, buyBackLong] = getLongPoins(price, long)
-    isGetData.current = false
+      let [entryShort, buyBackShort] = getShortPoins(price, short)
+      let [entryLong, buyBackLong] = getLongPoins(price, long)
 
-    return {
-      longPoints: {
-        entry: entryLong,
-        buyBack: buyBackLong,
-      },
-      shortPoints: {
-        entry: entryShort,
-        buyBack: buyBackShort,
-      },
+      if (entryLong === buyBackLong) {
+        buyBackLong = (3 * entryLong - entryShort) / 2
+      }
+
+      if (entryShort === buyBackShort) {
+        buyBackShort = (3 * entryShort - entryLong) / 2
+      }
+
+      isGetData.current = false
+
+      return {
+        longPoints: {
+          entry: entryLong,
+          buyBack: buyBackLong,
+        },
+        shortPoints: {
+          entry: entryShort,
+          buyBack: buyBackShort,
+        },
+      }
+    } catch (error) {
+      console.error(error)
+      return undefined
     }
   }
 
