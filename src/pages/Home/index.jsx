@@ -275,7 +275,10 @@ export function Home() {
     }
 
     console.log('MONEDAS DOS A UNO, RECOMENDADAS')
-    console.log({ longs, shorts })
+    console.log('LONGS')
+    console.table(longs)
+    console.log('SHORT')
+    console.table(shorts)
   }
 
   useEffect(() => {
