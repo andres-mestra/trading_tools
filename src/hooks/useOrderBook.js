@@ -1,8 +1,10 @@
 import { useRef } from 'react'
 import { calcRange } from '../helpers/calcRange'
+import { useDecimal } from './useDecimal'
 
 export const useOrderBook = () => {
   const isGetData = useRef(false)
+  const { div, sub, mul, plus, asNumber } = useDecimal()
 
   async function getCurrentPrice(symbol) {
     const resp = await fetch(
@@ -27,33 +29,38 @@ export const useOrderBook = () => {
 
     if (type === 'short') {
       orders.forEach(([price, amount]) => {
-        if (Number(price) <= poin) {
+        const currentPrice = asNumber(price)
+        if (currentPrice <= poin) {
           const currentMount = group[groupIndex][1] || 0
-          group[groupIndex] = [poin, currentMount + Number(amount)]
+          const newAmount = plus(currentMount, asNumber(amount))
+
+          group[groupIndex] = [poin, newAmount]
         } else {
-          poin = poin + sizeInterval
+          poin = plus(poin, sizeInterval)
           groupIndex = groupIndex + 1
-          group[groupIndex] = [poin, Number(amount)]
+
+          group[groupIndex] = [poin, asNumber(amount)]
         }
       })
-      return group
+      return group.filter((g) => g?.length)
     }
 
     if (type === 'long') {
       orders.forEach(([price, amount], index) => {
-        if (Number(price) >= poin) {
+        const currentPrice = asNumber(price)
+        if (currentPrice >= poin) {
           const currentMount = group[groupIndex][1] || 0
-          const newAmount = currentMount + Number(amount)
+          const newAmount = plus(currentMount, asNumber(amount))
 
           group[groupIndex] = [poin, newAmount]
         } else {
-          poin = poin - sizeInterval
+          poin = sub(poin, sizeInterval)
           groupIndex = groupIndex + 1
-          const newAmount = Number(amount)
+          const newAmount = asNumber(amount)
           group[groupIndex] = [poin, newAmount]
         }
       })
-      return group
+      return group.filter((g) => g?.length)
     }
 
     return group
@@ -61,24 +68,24 @@ export const useOrderBook = () => {
 
   function getLocalLimit(minPrice, currentPrice, sizeInterval) {
     let flapMin = Math.trunc(minPrice)
-    let flapMax = flapMin + sizeInterval
+    let flapMax = plus(flapMin, sizeInterval)
 
     while (minPrice > flapMax) {
-      flapMax = flapMax + sizeInterval
+      flapMax = plus(flapMax, sizeInterval)
     }
-    flapMin = flapMax - sizeInterval
+    flapMin = plus(flapMax, sizeInterval)
 
     let quiton = 1
     let divisor = sizeInterval
     if (currentPrice >= 100) {
       while (flapMin % divisor !== 0) {
-        flapMin = flapMin - quiton
+        flapMin = sub(flapMin, quiton)
         if (flapMin % divisor === 0) {
           quiton = 10
         }
       }
 
-      flapMax = flapMin + sizeInterval
+      flapMax = plus(flapMin, sizeInterval)
     }
 
     return [flapMin, flapMax]
@@ -86,6 +93,7 @@ export const useOrderBook = () => {
 
   function getEntryPoin(groups) {
     const amounts = groups.slice(0, 15).map(({ 1: amount }) => amount)
+
     const biggerAmount = Math.max(...amounts)
     const [biggerPrice] = groups.find(([, amount]) => amount === biggerAmount)
     return biggerPrice
@@ -126,7 +134,7 @@ export const useOrderBook = () => {
   function getShortPoins(price, shortBook) {
     const sizeIntervalExt = calcRange(price, 'external')
     const sizeIntervalInt = calcRange(sizeIntervalExt, 'internal')
-    const minPrice = Number(shortBook[0][0])
+    const minPrice = asNumber(shortBook[0][0])
     const [, firtsLimitExternal] = getLocalLimit(
       minPrice,
       price,
@@ -159,7 +167,8 @@ export const useOrderBook = () => {
     const type = 'long'
     const sizeIntervalExt = calcRange(price, 'external')
     const sizeIntervalInt = calcRange(sizeIntervalExt, 'internal')
-    const minPrice = Number(longBook[0][0])
+    const minPrice = asNumber(longBook[0][0])
+
     const [firtsLimitExternal] = getLocalLimit(minPrice, price, sizeIntervalExt)
     const groupsExternal = getIntervals(
       longBook,
@@ -190,18 +199,18 @@ export const useOrderBook = () => {
       isGetData.current = true
 
       let price = await getCurrentPrice(symbol)
-      price = parseFloat(price)
+      price = asNumber(price)
       let { asks: short, bids: long } = await orderBook(symbol)
 
       let [entryShort, buyBackShort] = getShortPoins(price, short)
       let [entryLong, buyBackLong] = getLongPoins(price, long)
 
       if (entryLong === buyBackLong) {
-        buyBackLong = (3 * entryLong - entryShort) / 2
+        buyBackLong = div(sub(mul(3, entryLong), entryShort), 2)
       }
 
       if (entryShort === buyBackShort) {
-        buyBackShort = (3 * entryShort - entryLong) / 2
+        buyBackShort = div(sub((mul(3, entryShort), entryLong)), 2)
       }
 
       isGetData.current = false

@@ -10,6 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import ModeEditIcon from '@mui/icons-material/ModeEdit'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 
+import { useDecimal } from '../hooks/useDecimal'
 import { useMediaQueryMd } from '../hooks/useMediaQueryMd'
 import { distanceColor } from '../helpers/distanceUtils'
 import { binanceFuture } from '../helpers/urls'
@@ -23,6 +24,7 @@ export function TableCoinsItem({
   onUpdate,
 }) {
   const matches = useMediaQueryMd()
+  const { div, sub } = useDecimal()
   const { symbol, lastPrice } = coin
   const points = isLong ? coin.longPoints : coin.shortPoints
 
@@ -30,8 +32,8 @@ export function TableCoinsItem({
   const distanceEntryString = distanceEntry.toPrecision(3)
 
   const ratio = isLong
-    ? (coin.shortPoints.entry - entry) / (entry - buyBack)
-    : (entry - coin.longPoints.entry) / (buyBack - entry)
+    ? div(sub(coin.shortPoints.entry, entry), sub(entry, buyBack))
+    : div(sub(entry, coin.longPoints.entry), sub(buyBack, entry))
 
   const colorEntry = distanceColor(distanceEntry, type)
   const url = `${binanceFuture}/${symbol}usdt`

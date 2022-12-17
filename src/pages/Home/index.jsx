@@ -15,7 +15,9 @@ import { socketURL } from '../../helpers/urls'
 import { calcDistance } from '../../helpers/distanceUtils'
 import { calcBounces } from '../../helpers/calcBounces'
 import { deviceDetector } from '../../helpers/deviceDetector'
+import { useDecimal } from '../../hooks/useDecimal'
 import { useImportExportJson } from '../../hooks/useImportExportJson'
+import { useTwoToOne } from '../../hooks/useTwoToOne'
 
 export function Home() {
   const socketsRef = useRef([])
@@ -23,6 +25,8 @@ export function Home() {
   const [openForm, setOpenForm] = useState(false)
   const [coinsStorage, setCoinsStorage] = useLocalStorage('coins_data', [])
   const [coins, setCoins] = useState([...coinsStorage])
+  const { asNumber } = useDecimal()
+  const [handleGetTwoToOne] = useTwoToOne()
   const [importJson, exportJson, refInputImport] = useImportExportJson()
   const [nCoins, setNCoins] = useState(coins.length)
   const {
@@ -40,27 +44,29 @@ export function Home() {
   const onAddCoin = async (newCoin) => {
     const { symbol, longPoints, shortPoints } = newCoin
     const points = await getEntryPoints(symbol)
+    if (points) {
+      setCoins((prevCoins) => {
+        let coinsList = structuredClone(prevCoins)
+        coinsList = coinsList.filter((coin) => coin.symbol !== newCoin.symbol)
+        coinsList = [
+          ...coinsList,
+          {
+            ...newCoin,
+            longPoints: {
+              ...longPoints,
+              ...points.longPoints,
+            },
+            shortPoints: {
+              ...shortPoints,
+              ...points.shortPoints,
+            },
+          },
+        ]
+        setCoinsStorage(coinsList)
+        return coinsList
+      })
+    }
 
-    setCoins((prevCoins) => {
-      let coinsList = structuredClone(prevCoins)
-      coinsList = coinsList.filter((coin) => coin.symbol !== newCoin.symbol)
-      coinsList = [
-        ...coinsList,
-        {
-          ...newCoin,
-          longPoints: {
-            ...longPoints,
-            ...points.longPoints,
-          },
-          shortPoints: {
-            ...shortPoints,
-            ...points.shortPoints,
-          },
-        },
-      ]
-      setCoinsStorage(coinsList)
-      return coinsList
-    })
     setIsAddCoin(false)
   }
 
@@ -139,7 +145,7 @@ export function Home() {
       socket.onmessage = function (event) {
         const { data: resp } = JSON.parse(event.data)
         let { p: lastPrice } = resp
-        lastPrice = Number(lastPrice)
+        lastPrice = asNumber(lastPrice)
 
         setCoins((prevState) => {
           const newState = structuredClone(prevState)
@@ -225,60 +231,6 @@ export function Home() {
     Notification.requestPermission().then((result) => {
       console.log(result)
     })
-  }
-
-  const handleGetTwoToOne = async () => {
-    const resp = await fetch('https://fapi.binance.com/fapi/v1/exchangeInfo')
-    const data = await resp.json()
-    const { symbols } = data
-    const newSymbols = []
-    symbols.forEach((s) => {
-      const { symbol, contractType, status } = s
-      const isUsdt = symbol.includes('USDT')
-      const isPerpetual = contractType === 'PERPETUAL'
-      const isTrading = status === 'TRADING'
-      if (isUsdt && isPerpetual && isTrading)
-        newSymbols.push(symbol.replace('USDT', ''))
-    })
-
-    const longs = []
-    const shorts = []
-
-    for (const symbol of newSymbols) {
-      console.log(symbol)
-      const points = await getEntryPoints(symbol)
-      if (points !== undefined) {
-        const { shortPoints, longPoints } = points
-
-        const ratioLong =
-          (shortPoints.entry - longPoints.entry) /
-          (longPoints.entry - longPoints.buyBack)
-        const ratioShort =
-          (shortPoints.entry - longPoints.entry) /
-          (shortPoints.buyBack - shortPoints.entry)
-
-        if (ratioLong >= 1.66)
-          longs.push({
-            symbol,
-            ratio: ratioLong,
-            tp: shortPoints.entry,
-            ...longPoints,
-          })
-        if (ratioShort >= 1.66)
-          shorts.push({
-            symbol,
-            ratio: ratioShort,
-            tp: longPoints.entry,
-            ...shortPoints,
-          })
-      }
-    }
-
-    console.log('MONEDAS DOS A UNO, RECOMENDADAS')
-    console.log('LONGS')
-    console.table(longs)
-    console.log('SHORT')
-    console.table(shorts)
   }
 
   useEffect(() => {
