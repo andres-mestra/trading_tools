@@ -205,12 +205,14 @@ export const useOrderBook = () => {
       let [entryShort, buyBackShort] = getShortPoins(price, short)
       let [entryLong, buyBackLong] = getLongPoins(price, long)
 
+      console.log({ entryLong, buyBackLong })
+
       if (entryLong === buyBackLong) {
         buyBackLong = div(sub(mul(3, entryLong), entryShort), 2)
       }
-
+      console.log({ entryShort, buyBackShort })
       if (entryShort === buyBackShort) {
-        buyBackShort = div(sub((mul(3, entryShort), entryLong)), 2)
+        buyBackShort = div(sub(mul(3, entryShort), entryLong), 2)
       }
 
       isGetData.current = false
