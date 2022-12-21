@@ -48,8 +48,8 @@ export function useTwoToOne() {
             entry,
             target: shortPoints.entry,
             buyBack,
-            ratio: ratioLong,
             distance,
+            ratio: ratioLong,
           })
         }
 
