@@ -2,7 +2,7 @@ import { useDecimal } from './useDecimal'
 import { useOrderBook } from './useOrderBook'
 
 export function useTwoToOne() {
-  const { sub, div } = useDecimal()
+  const { abs, sub, div, mul } = useDecimal()
   const [getEntryPoints] = useOrderBook()
 
   const handleGetTwoToOne = async () => {
@@ -37,20 +37,41 @@ export function useTwoToOne() {
           sub(shortPoints.buyBack, shortPoints.entry)
         )
 
-        if (ratioLong >= 1.66)
+        if (ratioLong >= 1.66) {
+          const distance = mul(
+            div(sub(shortPoints.entry, longPoints.entry), longPoints.entry),
+            100
+          )
+          const { entry, buyBack } = longPoints
           longs.push({
             symbol,
+            entry,
+            target: shortPoints.entry,
+            buyBack,
             ratio: ratioLong,
-            tp: shortPoints.entry,
-            ...longPoints,
+            distance,
           })
-        if (ratioShort >= 1.66)
+        }
+
+        if (ratioShort >= 1.66) {
+          const distance = mul(
+            div(
+              abs(sub(longPoints.entry, shortPoints.entry)),
+              shortPoints.entry
+            ),
+            100
+          )
+
+          const { entry, buyBack } = shortPoints
           shorts.push({
             symbol,
+            entry,
+            target: longPoints.entry,
+            buyBack,
+            distance,
             ratio: ratioShort,
-            tp: longPoints.entry,
-            ...shortPoints,
           })
+        }
       }
     }
 

@@ -30,11 +30,16 @@ export function useDecimal() {
     return x.dividedBy(y).toNumber()
   }
 
+  function abs(n) {
+    return new Decimal(n).abs().toNumber()
+  }
+
   function asNumber(a) {
     return new Decimal(a).toNumber()
   }
 
   return {
+    abs,
     div,
     sub,
     mul,
