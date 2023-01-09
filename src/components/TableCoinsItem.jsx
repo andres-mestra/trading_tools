@@ -25,15 +25,14 @@ export function TableCoinsItem({
 }) {
   const matches = useMediaQueryMd()
   const { div, sub } = useDecimal()
-  const { symbol, lastPrice } = coin
-  const points = isLong ? coin.longPoints : coin.shortPoints
 
-  const { entry, buyBack, distanceEntry, bounces } = points
+  const { symbol, lastPrice, entry, buyBack, distanceEntry, bounces, target } =
+    coin
   const distanceEntryString = distanceEntry.toPrecision(3)
 
   const ratio = isLong
-    ? div(sub(coin.shortPoints.entry, entry), sub(entry, buyBack))
-    : div(sub(entry, coin.longPoints.entry), sub(buyBack, entry))
+    ? div(sub(target, entry), sub(entry, buyBack))
+    : div(sub(entry, target), sub(buyBack, entry))
 
   const colorEntry = distanceColor(distanceEntry, type)
   const url = `${binanceFuture}/${symbol}usdt`
@@ -53,7 +52,6 @@ export function TableCoinsItem({
         </Stack>
       </TableCell>
       <TableCell align="right">{lastPrice.toPrecision(7)}</TableCell>
-      <TableCell align="right">{entry}</TableCell>
       <TableCell align="right">
         <Stack>
           <Typography color={colorEntry} fontWeight="bold">
@@ -62,6 +60,8 @@ export function TableCoinsItem({
           <Typography variant="caption">{bounces}</Typography>
         </Stack>
       </TableCell>
+      <TableCell align="right">{entry}</TableCell>
+      <TableCell align="right">{target}</TableCell>
       <TableCell align="right">{buyBack}</TableCell>
       {!actionsHidden && (
         <TableCell align="right">

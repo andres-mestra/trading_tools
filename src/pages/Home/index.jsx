@@ -23,18 +23,19 @@ export function Home() {
   const socketsRef = useRef([])
   const [getEntryPoints] = useOrderBook()
   const [openForm, setOpenForm] = useState(false)
-  const [coinsStorage, setCoinsStorage] = useLocalStorage('coins_data', [])
-  const [coins, setCoins] = useState([...coinsStorage])
+  const [shortsStorage, setShortsStorage] = useLocalStorage('shorts_data', [])
+  const [longsStorage, setLongsStorage] = useLocalStorage('longs_data', [])
+  const [longs, setLongs] = useState([...longsStorage])
+  const [shorts, setShorts] = useState([...shortsStorage])
   const { asNumber } = useDecimal()
   const [handleGetTwoToOne] = useTwoToOne()
   const [importJson, exportJson, refInputImport] = useImportExportJson()
-  const [nCoins, setNCoins] = useState(coins.length)
+  const [nCoins, setNCoins] = useState(longs.length + shorts.length)
   const {
     newCoin: currentCoin,
     onSetNewCoin: onSetCurrentCoin,
     isAddCoin,
-    onSymbolChange,
-    onPointsChanges,
+    onFormCoin,
     onResetForm,
     setIsAddCoin,
   } = useFormCoin()
@@ -42,68 +43,77 @@ export function Home() {
   const deviceInfo = useMemo(() => deviceDetector(), [])
 
   const onAddCoin = async (newCoin) => {
-    const { symbol, longPoints, shortPoints } = newCoin
-    const points = await getEntryPoints(symbol)
+    const { symbol, type } = newCoin
+    const points = await getEntryPoints(symbol, type)
     if (points) {
-      setCoins((prevCoins) => {
-        let coinsList = structuredClone(prevCoins)
-        coinsList = coinsList.filter((coin) => coin.symbol !== newCoin.symbol)
-        coinsList = [
-          ...coinsList,
-          {
-            ...newCoin,
-            longPoints: {
-              ...longPoints,
-              ...points.longPoints,
-            },
-            shortPoints: {
-              ...shortPoints,
-              ...points.shortPoints,
-            },
-          },
-        ]
-        setCoinsStorage(coinsList)
-        return coinsList
-      })
+      if (type === 'long') {
+        setLongs((prevLongs) => {
+          let longsList = structuredClone(prevLongs)
+          longsList = longsList.filter((coin) => coin.symbol !== newCoin.symbol)
+          longsList = [...longsList, { ...newCoin, ...points }]
+          setLongsStorage(longsList)
+          return longsList
+        })
+      }
+
+      if (type === 'short') {
+        setShorts((prevShorts) => {
+          let shortsList = structuredClone(prevShorts)
+          shortsList = shortsList.filter(
+            (coin) => coin.symbol !== newCoin.symbol
+          )
+          shortsList = [...shortsList, { ...newCoin, ...points }]
+          setShortsStorage(shortsList)
+          return shortsList
+        })
+      }
     }
 
     setIsAddCoin(false)
   }
 
   const onPullCoin = (coin) => {
-    setCoins((prevCoins) => {
-      let coinsList = structuredClone(prevCoins)
-      const coinIndex = coinsList.findIndex((c) => c.symbol === coin.symbol)
-      if (coinIndex === -1) return prevCoins
+    if (coin.type === 'long') {
+      setLongs((prev) => {
+        let longsList = structuredClone(prev)
+        const coinIndex = longsList.findIndex((c) => c.symbol === coin.symbol)
+        if (coinIndex === -1) return prev
+        return longsList
+      })
+    }
 
-      coinsList[coinIndex] = { ...coin }
-      setCoinsStorage(coinsList)
-      return coinsList
-    })
+    if (coin.type === 'short') {
+      setShorts((prev) => {
+        let shortsList = structuredClone(prev)
+        const coinIndex = shortsList.findIndex((c) => c.symbol === coin.symbol)
+        if (coinIndex === -1) return prev
+        return shortsList
+      })
+    }
   }
 
-  const onDeleteCoin = (symbol) => {
-    setCoins((prevCoins) => {
-      const coinsList = prevCoins.filter((coin) => coin.symbol !== symbol)
-      setCoinsStorage(coinsList)
-      return coinsList
-    })
+  const onDeleteCoin = (coin) => {
+    const { symbol, type } = coin
+    if (type === 'long') {
+      setLongs((prev) => {
+        const longsList = prev.filter((c) => c.symbol !== symbol)
+        setLongsStorage(longsList)
+        return longsList
+      })
+    }
+    if (type === 'short') {
+      setShorts((prev) => {
+        const shortsList = prev.filter((c) => c.symbol !== symbol)
+        setShortsStorage(shortsList)
+        return shortsList
+      })
+    }
   }
 
   const onUpdatePoints = async (coin) => {
-    const { symbol, longPoints, shortPoints } = coin
-    const points = await getEntryPoints(symbol)
-    const newCoin = {
-      ...coin,
-      longPoints: {
-        ...longPoints,
-        ...points.longPoints,
-      },
-      shortPoints: {
-        ...shortPoints,
-        ...points.shortPoints,
-      },
-    }
+    const { symbol, type } = coin
+    const points = await getEntryPoints(symbol, type)
+    const newCoin = { ...coin, ...points }
     onPullCoin(newCoin)
   }
 
@@ -115,13 +125,16 @@ export function Home() {
 
   const handleImportPoints = (event) => {
     importJson(event, (newPoints) => {
-      setCoinsStorage(newPoints)
-      setCoins(newPoints)
+      const { longs, shorts } = newPoints
+      setLongs(longs)
+      setShorts(shorts)
+      setLongsStorage(longs)
+      setShortsStorage(shorts)
     })
   }
 
   const handleExportPoints = () => {
-    exportJson(coinsStorage)
+    exportJson({ longs, shorts })
   }
 
   const handleAddCoin = () => {
@@ -139,89 +152,99 @@ export function Home() {
   }
 
   const generateSocket = () => {
-    return coins.map((data) => {
-      const { symbol } = data
-      const socket = new WebSocket(`${socketURL}=${symbol}usdt@markPrice@1s`)
+    const longsSymbols = longs.map(({ symbol }) => symbol)
+    const shortsSymbols = shorts.map(({ symbol }) => symbol)
+    const symbols = [...new Set(longsSymbols.concat(shortsSymbols))]
+
+    if (symbols.length) {
+      const symbolsParams = symbols
+        .map((symbol) => `${symbol}usdt@markPrice@1s`)
+        .join('/')
+      const socket = new WebSocket(`${socketURL}=${symbolsParams}`)
       socket.onmessage = function (event) {
         const { data: resp } = JSON.parse(event.data)
-        let { p: lastPrice } = resp
+        let { p: lastPrice, s: ticket } = resp
+        ticket = ticket.replace('USDT', '').toLowerCase()
         lastPrice = asNumber(lastPrice)
 
-        setCoins((prevState) => {
+        setLongs((prevState) => {
           const newState = structuredClone(prevState)
-          const coinIndex = newState.findIndex(
-            (coin) => coin?.symbol === symbol
-          )
+          const coinIndex = newState.findIndex((c) => c.symbol === ticket)
 
-          if (coinIndex === -1) {
-            socket.close()
-            return newState
-          }
+          if (coinIndex === -1) return newState
 
           const coin = newState[coinIndex]
-          const { shortPoints, longPoints } = coin
-
-          //LONG
-          longPoints.distanceEntry = calcDistance(
-            lastPrice,
-            longPoints.entry,
-            'long'
-          )
-          longPoints.bounces = calcBounces(
-            longPoints.bounces,
-            longPoints.distanceEntry
-          )
-
-          //SHORT
-          shortPoints.distanceEntry = calcDistance(
-            lastPrice,
-            shortPoints.entry,
-            'short'
-          )
-          shortPoints.bounces = calcBounces(
-            shortPoints.bounces,
-            shortPoints.distanceEntry
-          )
+          let notify = coin?.notify
+          let { entry, bounces, type } = coin
+          const distanceEntry = calcDistance(lastPrice, entry, type)
+          bounces = calcBounces(bounces, distanceEntry)
 
           if ('Notification' in window && !deviceInfo.isMovil) {
-            if (
-              shortPoints.distanceEntry >= 0 &&
-              shortPoints.distanceEntry < 0.3
-            ) {
-              if (shortPoints?.notify === undefined || !shortPoints?.notify) {
-                shortPoints.notify = true
+            if (distanceEntry >= 0 && distanceEntry < 0.3) {
+              if (notify === undefined) {
+                notify = true
                 new Notification('Notification', {
-                  body: `SHORT ${coin.symbol.toUpperCase()} !!!!`,
+                  body: `${type.toUpperCase()} ${ticket.toUpperCase()} !!!!`,
                   dir: 'ltr',
                 })
               }
-            } else if (shortPoints.distanceEntry > 0.5) {
-              shortPoints.notify = false
-            }
-
-            if (
-              longPoints.distanceEntry >= 0 &&
-              longPoints.distanceEntry < 0.3
-            ) {
-              if (longPoints?.notify === undefined || !longPoints?.notify) {
-                longPoints.notify = true
-                new Notification('Notification', {
-                  body: `LONG ${coin.symbol.toUpperCase()} !!!!`,
-                  dir: 'ltr',
-                })
-              }
-            } else if (longPoints.distanceEntry > 0.5) {
-              longPoints.notify = false
+            } else if (distanceEntry > 0.5) {
+              notify = false
             }
           }
 
-          newState[coinIndex] = { ...coin, lastPrice, shortPoints, longPoints }
+          newState[coinIndex] = {
+            ...coin,
+            bounces,
+            distanceEntry,
+            notify,
+            lastPrice,
+          }
+          return [...newState]
+        })
 
+        setShorts((prevState) => {
+          const newState = structuredClone(prevState)
+          const coinIndex = newState.findIndex((c) => c.symbol === ticket)
+
+          if (coinIndex === -1) return newState
+
+          const coin = newState[coinIndex]
+          let notify = coin?.notify
+          let { entry, bounces, type } = coin
+
+          const distanceEntry = calcDistance(lastPrice, entry, type)
+          bounces = calcBounces(bounces, distanceEntry)
+
+          if ('Notification' in window && !deviceInfo.isMovil) {
+            if (distanceEntry >= 0 && distanceEntry < 0.3) {
+              if (notify === undefined) {
+                notify = true
+                new Notification('Notification', {
+                  body: `${type.toUpperCase()} ${ticket.toUpperCase()} !!!!`,
+                  dir: 'ltr',
+                })
+              }
+            } else if (distanceEntry > 0.5) {
+              notify = false
+            }
+          }
+
+          newState[coinIndex] = {
+            ...coin,
+            bounces,
+            distanceEntry,
+            notify,
+            lastPrice,
+          }
           return [...newState]
         })
       }
+
       return socket
-    })
+    }
+
+    return null
   }
 
   const handleNotification = () => {
@@ -234,22 +257,24 @@ export function Home() {
   }
 
   useEffect(() => {
-    if (coins.length) {
+    const hasCoins = longs.length || shorts.length
+    if (hasCoins) {
       socketsRef.current = generateSocket()
     }
     return () => {
-      socketsRef.current.forEach((socket) => socket.close())
+      socketsRef.current?.socket?.close()
     }
   }, [])
 
   useEffect(() => {
-    if (coins.length !== nCoins) {
-      socketsRef.current.forEach(() => (socket) => socket.close())
-      socketsRef.current = []
+    const length = longs.length + shorts.length
+    if (length !== nCoins) {
+      socketsRef.current?.socket?.close()
+      socketsRef.current = null
       socketsRef.current = generateSocket()
-      setNCoins(coins.length)
+      setNCoins(length)
     }
-  }, [coins])
+  }, [longs, shorts])
 
   return (
     <Box sx={{ width: '100%', bgcolor: 'background.default' }}>
@@ -313,8 +338,7 @@ export function Home() {
             open={openForm}
             isAdd={isAddCoin}
             newCoin={currentCoin}
-            onSymbol={onSymbolChange}
-            onPoints={onPointsChanges}
+            onChange={onFormCoin}
             onSubmit={handleSubmitForm}
             onClose={handleCloseForm}
           />
@@ -324,7 +348,7 @@ export function Home() {
                 Long
               </Typography>
               <TableCoins
-                coins={coins}
+                coins={longs}
                 type="long"
                 render={(coin, type, isLong, index) => (
                   <TableCoinsItem
@@ -332,7 +356,7 @@ export function Home() {
                     type={type}
                     coin={coin}
                     isLong={isLong}
-                    onDelete={onDeleteCoin}
+                    onDelete={() => onDeleteCoin(coin)}
                     onEdit={() => onEditCoin(coin)}
                     onUpdate={() => onUpdatePoints(coin)}
                   />
@@ -344,7 +368,7 @@ export function Home() {
                 Short
               </Typography>
               <TableCoins
-                coins={coins}
+                coins={shorts}
                 type="short"
                 render={(coin, type, isLong, index) => (
                   <TableCoinsItem
@@ -352,7 +376,7 @@ export function Home() {
                     type={type}
                     coin={coin}
                     isLong={isLong}
-                    onDelete={onDeleteCoin}
+                    onDelete={() => onDeleteCoin(coin)}
                     onEdit={() => onEditCoin(coin)}
                     onUpdate={() => onUpdatePoints(coin)}
                   />
