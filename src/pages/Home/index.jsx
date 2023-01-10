@@ -78,7 +78,8 @@ export function Home() {
         let longsList = structuredClone(prev)
         const coinIndex = longsList.findIndex((c) => c.symbol === coin.symbol)
         if (coinIndex === -1) return prev
-        return longsList
+        longsList[coinIndex] = { ...coin }
+        return [...longsList]
       })
     }
 
@@ -87,6 +88,8 @@ export function Home() {
         let shortsList = structuredClone(prev)
         const coinIndex = shortsList.findIndex((c) => c.symbol === coin.symbol)
         if (coinIndex === -1) return prev
+        longsList[coinIndex] = { ...coin }
+        return [...longsList]
         return shortsList
       })
     }
