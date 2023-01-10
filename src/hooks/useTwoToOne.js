@@ -24,7 +24,7 @@ export function useTwoToOne() {
 
     for (const symbol of newSymbols) {
       console.log(symbol)
-      const points = await getEntryPoints(symbol)
+      const points = await getEntryPoints(symbol, 'all')
       if (points !== undefined) {
         const { shortPoints, longPoints } = points
 

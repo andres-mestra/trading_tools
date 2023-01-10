@@ -193,7 +193,7 @@ export const useOrderBook = () => {
     return [entryLong, buyBackPoint]
   }
 
-  async function getPoints(symbol) {
+  async function getPoints(symbol, type) {
     try {
       if (isGetData.current) return undefined
       isGetData.current = true
@@ -208,22 +208,42 @@ export const useOrderBook = () => {
       if (entryLong === buyBackLong) {
         buyBackLong = div(sub(mul(3, entryLong), entryShort), 2)
       }
-      
+
       if (entryShort === buyBackShort) {
         buyBackShort = div(sub(mul(3, entryShort), entryLong), 2)
       }
 
       isGetData.current = false
 
-      return {
-        longPoints: {
+      if (type === 'long') {
+        return {
           entry: entryLong,
+          target: entryShort,
           buyBack: buyBackLong,
-        },
-        shortPoints: {
+          buyBackShort,
+        }
+      }
+
+      if (type === 'short') {
+        return {
           entry: entryShort,
+          target: entryLong,
           buyBack: buyBackShort,
-        },
+          buyBackLong,
+        }
+      }
+
+      if (type === 'all') {
+        return {
+          longPoints: {
+            entry: entryLong,
+            buyBack: buyBackLong,
+          },
+          shortPoints: {
+            entry: entryShort,
+            buyBack: buyBackShort,
+          },
+        }
       }
     } catch (error) {
       console.error(error)
