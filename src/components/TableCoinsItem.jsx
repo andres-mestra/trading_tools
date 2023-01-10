@@ -69,11 +69,7 @@ export function TableCoinsItem({
           <IconButton color="primary" size="small" onClick={onEdit}>
             <ModeEditIcon />
           </IconButton>
-          <IconButton
-            color="error"
-            size="small"
-            onClick={() => onDelete(symbol)}
-          >
+          <IconButton color="error" size="small" onClick={onDelete}>
             <DeleteIcon />
           </IconButton>
           <Tooltip title="Recalcular entrada">
