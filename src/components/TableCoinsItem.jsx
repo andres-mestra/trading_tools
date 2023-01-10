@@ -12,7 +12,6 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit'
 import RestartAltIcon from '@mui/icons-material/RestartAlt'
 
 import { useDecimal } from '../hooks/useDecimal'
-import { useMediaQueryMd } from '../hooks/useMediaQueryMd'
 import { distanceColor } from '../helpers/distanceUtils'
 import { binanceFuture } from '../helpers/urls'
 
@@ -24,7 +23,6 @@ export function TableCoinsItem({
   onEdit,
   onUpdate,
 }) {
-  const matches = useMediaQueryMd()
   const { div, sub } = useDecimal()
 
   const { symbol, lastPrice, entry, buyBack, distanceEntry, bounces, target } =
@@ -37,8 +35,6 @@ export function TableCoinsItem({
 
   const colorEntry = distanceColor(distanceEntry, type)
   const url = `${binanceFuture}/${symbol}usdt`
-
-  const actionsHidden = matches && type === 'short'
 
   return (
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -64,21 +60,20 @@ export function TableCoinsItem({
       <TableCell align="right">{entry}</TableCell>
       <TableCell align="right">{target}</TableCell>
       <TableCell align="right">{buyBack}</TableCell>
-      {!actionsHidden && (
-        <TableCell align="right">
-          <IconButton color="primary" size="small" onClick={onEdit}>
-            <ModeEditIcon />
+
+      <TableCell align="right">
+        <IconButton color="primary" size="small" onClick={onEdit}>
+          <ModeEditIcon />
+        </IconButton>
+        <IconButton color="error" size="small" onClick={onDelete}>
+          <DeleteIcon />
+        </IconButton>
+        <Tooltip title="Recalcular entrada">
+          <IconButton color="inherit" size="small" onClick={onUpdate}>
+            <RestartAltIcon />
           </IconButton>
-          <IconButton color="error" size="small" onClick={onDelete}>
-            <DeleteIcon />
-          </IconButton>
-          <Tooltip title="Recalcular entrada">
-            <IconButton color="inherit" size="small" onClick={onUpdate}>
-              <RestartAltIcon />
-            </IconButton>
-          </Tooltip>
-        </TableCell>
-      )}
+        </Tooltip>
+      </TableCell>
     </TableRow>
   )
 }

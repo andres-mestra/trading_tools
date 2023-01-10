@@ -1,11 +1,7 @@
 import { memo } from 'react'
 import { TableCell, TableHead, TableRow, Typography } from '@mui/material'
-import { useMediaQueryMd } from '../hooks/useMediaQueryMd'
 
 export const TableHeaderCoins = memo(({ isLong = true }) => {
-  const matches = useMediaQueryMd()
-  const actionsHidden = matches && !isLong
-
   return (
     <TableHead>
       <TableRow>
@@ -25,7 +21,7 @@ export const TableHeaderCoins = memo(({ isLong = true }) => {
         <TableCell align="right">Entry</TableCell>
         <TableCell align="right">Target</TableCell>
         <TableCell align="right">BuyBack</TableCell>
-        {!actionsHidden && <TableCell align="right">Acciones</TableCell>}
+        <TableCell align="right">Acciones</TableCell>
       </TableRow>
     </TableHead>
   )
