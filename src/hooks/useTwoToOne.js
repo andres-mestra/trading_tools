@@ -75,7 +75,9 @@ export function useTwoToOne() {
       }
     }
 
-    console.log('MONEDAS DOS A UNO, RECOMENDADAS')
+    console.log(
+      'MONEDAS DOS A UNO \nSE RECOMIENDAN LAS QUE TENGAN UNA DISTANCIA MAYOR A 2'
+    )
     console.log('LONGS')
     console.table(longs)
     console.log('SHORT')

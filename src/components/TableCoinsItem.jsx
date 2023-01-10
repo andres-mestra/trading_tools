@@ -1,6 +1,7 @@
 import {
   Link,
   Stack,
+  Tooltip,
   IconButton,
   TableRow,
   TableCell,
@@ -75,9 +76,11 @@ export function TableCoinsItem({
           >
             <DeleteIcon />
           </IconButton>
-          <IconButton color="inherit" size="small" onClick={onUpdate}>
-            <RestartAltIcon />
-          </IconButton>
+          <Tooltip title="Recalcular entrada">
+            <IconButton color="inherit" size="small" onClick={onUpdate}>
+              <RestartAltIcon />
+            </IconButton>
+          </Tooltip>
         </TableCell>
       )}
     </TableRow>

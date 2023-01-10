@@ -1,6 +1,6 @@
 import { version } from '../../../package.json'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Box, Typography, Paper, Stack, Button } from '@mui/material'
+import { Box, Typography, Paper, Stack, Button, Tooltip } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import { FormAddCoin } from '../../components/FormAddCoin'
@@ -328,9 +328,11 @@ export function Home() {
                 onChange={handleImportPoints}
               />
             </Button>
-            <Button variant="outlined" onClick={handleGetTwoToOne}>
-              Dos / Uno
-            </Button>
+            <Tooltip title="Ejecutar, luego ver tabla en consola del navegador">
+              <Button variant="outlined" onClick={handleGetTwoToOne}>
+                Dos / Uno
+              </Button>
+            </Tooltip>
             <Button variant="outlined" onClick={handleNotification}>
               notificar
             </Button>
