@@ -160,7 +160,7 @@ export function Home() {
 
     if (symbols.length) {
       const symbolsParams = symbols
-        .map((symbol) => `${symbol}usdt@markPrice@1s`)
+        .map((symbol) => `${symbol.toLowerCase()}usdt@markPrice@1s`)
         .join('/')
       const socket = new WebSocket(`${socketURL}=${symbolsParams}`)
       socket.onmessage = function (event) {
