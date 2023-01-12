@@ -11,13 +11,13 @@ import { ToggleThemeMode } from '../../components/ToggleThemeMode'
 import { useFormCoin } from '../../hooks/useFormCoin'
 import { useOrderBook } from '../../hooks/useOrderBook'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
-import { socketURL } from '../../helpers/urls'
 import { calcDistance } from '../../helpers/distanceUtils'
 import { calcBounces } from '../../helpers/calcBounces'
 import { useDecimal } from '../../hooks/useDecimal'
 import { useImportExportJson } from '../../hooks/useImportExportJson'
 import { useTwoToOne } from '../../hooks/useTwoToOne'
 import { useNotify } from '../../hooks/useNotify'
+import { binanceSocketURL } from '../../services/binanceService'
 
 export function Home() {
   const socketsRef = useRef([])
@@ -177,7 +177,7 @@ export function Home() {
       const symbolsParams = symbols
         .map((symbol) => `${symbol.toLowerCase()}usdt@markPrice@1s`)
         .join('/')
-      const socket = new WebSocket(`${socketURL}=${symbolsParams}`)
+      const socket = new WebSocket(`${binanceSocketURL}=${symbolsParams}`)
 
       socket.onmessage = function (event) {
         const { data: resp } = JSON.parse(event.data)

@@ -13,7 +13,7 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt'
 
 import { useDecimal } from '../hooks/useDecimal'
 import { distanceColor } from '../helpers/distanceUtils'
-import { binanceFuture } from '../helpers/urls'
+import { binanceFutureUrl } from '../services/binanceService'
 
 export function TableCoinsItem({
   coin,
@@ -34,7 +34,7 @@ export function TableCoinsItem({
     : div(sub(entry, target), sub(buyBack, entry))
 
   const colorEntry = distanceColor(distanceEntry, type)
-  const url = `${binanceFuture}/${symbol}usdt`
+  const url = `${binanceFutureUrl}/${symbol}usdt`
 
   return (
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>

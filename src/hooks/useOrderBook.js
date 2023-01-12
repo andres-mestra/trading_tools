@@ -1,26 +1,11 @@
 import { useRef } from 'react'
-import { calcRange } from '../helpers/calcRange'
 import { useDecimal } from './useDecimal'
+import { getCurrentPrice, getOrderBook } from '../services/binanceService'
+import { calcRange } from '../helpers/calcRange'
 
 export const useOrderBook = () => {
   const isGetData = useRef(false)
   const { div, sub, mul, plus, asNumber } = useDecimal()
-
-  async function getCurrentPrice(symbol) {
-    const resp = await fetch(
-      `https://fapi.binance.com/fapi/v1/premiumIndex?symbol=${symbol}usdt`
-    )
-    const { markPrice } = await resp.json()
-    return markPrice
-  }
-
-  async function orderBook(symbol) {
-    const resp = await fetch(
-      `https://fapi.binance.com/fapi/v1/depth?symbol=${symbol.toUpperCase()}USDT&limit=1000&weight=20`
-    )
-    const book = await resp.json()
-    return book
-  }
 
   function getIntervals(orders, limit, sizeInterval, type = 'short') {
     let poin = limit
@@ -200,7 +185,7 @@ export const useOrderBook = () => {
 
       let price = await getCurrentPrice(symbol)
       price = asNumber(price)
-      let { asks: short, bids: long } = await orderBook(symbol)
+      let { asks: short, bids: long } = await getOrderBook(symbol)
 
       let [entryShort, buyBackShort] = getShortPoins(price, short)
       let [entryLong, buyBackLong] = getLongPoins(price, long)
