@@ -1,6 +1,6 @@
 {
   "name": "oraculo",
-  "version": "1.2",
+  "version": "1.2.1",
   "homepage": "https://andres-mestra.github.io/oraculo",
   "type": "module",
   "scripts": {
