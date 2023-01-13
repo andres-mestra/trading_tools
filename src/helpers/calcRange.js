@@ -1,5 +1,4 @@
 export function calcRange(price, type) {
-  let external = 1
   if (type === 'external') {
     if (price >= 1000) return 100
     if (price >= 500) return 50

@@ -120,64 +120,28 @@ export const useOrderBook = () => {
     return subOrders
   }
 
-  function getShortPoins(price, shortBook, symbol) {
-    const sizeIntervalExt =
-      symbol === ETH_SYMBOL ? ETH_RANGE_EXT : calcRange(price, 'external')
-    const sizeIntervalInt =
-      symbol === ETH_SYMBOL
-        ? ETH_RANGE_INT
-        : calcRange(sizeIntervalExt, 'internal')
-    const minPrice = asNumber(shortBook[0][0])
-    const [, firtsLimitExternal] = getLocalLimit(
-      minPrice,
-      price,
-      sizeIntervalExt
-    )
-    const groupsExternal = getIntervals(
-      shortBook,
-      firtsLimitExternal,
-      sizeIntervalExt
-    )
-    const buyBackPoint = getEntryPoin(groupsExternal)
-    const subShort = getSubOrdes(shortBook, buyBackPoint)
-    const [, firtsLimitInternal] = getLocalLimit(
-      minPrice,
-      price,
-      sizeIntervalInt
-    )
-    const groupsInternal = getIntervals(
-      subShort,
-      firtsLimitInternal,
-      sizeIntervalInt
-    )
-    const entryShort = getEntryPoin(groupsInternal)
-
-    return [entryShort, buyBackPoint]
-  }
-
-  function getLongPoins(price, longBook, symbol) {
+  function getPositionsPoints(type, price, orderBook, symbol) {
     // EXTERNAL
-    const type = 'long'
     const sizeIntervalExt =
       symbol === ETH_SYMBOL ? ETH_RANGE_EXT : calcRange(price, 'external')
     const sizeIntervalInt =
       symbol === ETH_SYMBOL
         ? ETH_RANGE_INT
         : calcRange(sizeIntervalExt, 'internal')
-    const minPrice = asNumber(longBook[0][0])
+    const minPrice = asNumber(orderBook[0][0])
 
     const [firtsLimitExternal] = getLocalLimit(minPrice, price, sizeIntervalExt)
     const groupsExternal = getIntervals(
-      longBook,
+      orderBook,
       firtsLimitExternal,
       sizeIntervalExt,
       type
     )
 
-    const buyBackPoint = getEntryPoin(groupsExternal)
+    const buyBack = getEntryPoin(groupsExternal)
 
     //INTERNAL
-    const subShort = getSubOrdes(longBook, buyBackPoint, type)
+    const subShort = getSubOrdes(orderBook, buyBack, type)
     const [firtsLimitInternal] = getLocalLimit(minPrice, price, sizeIntervalInt)
     const groupsInternal = getIntervals(
       subShort,
@@ -185,9 +149,9 @@ export const useOrderBook = () => {
       sizeIntervalInt,
       type
     )
-    const entryLong = getEntryPoin(groupsInternal)
+    const entry = getEntryPoin(groupsInternal)
 
-    return [entryLong, buyBackPoint]
+    return [entry, buyBack]
   }
 
   async function getPoints(symbol, type) {
@@ -197,10 +161,22 @@ export const useOrderBook = () => {
 
       let price = await getCurrentPrice(symbol)
       price = asNumber(price)
-      let { asks: short, bids: long } = await getOrderBook(symbol)
+      let { asks: shortOrderBook, bids: longOrderBook } = await getOrderBook(
+        symbol
+      )
 
-      let [entryShort, buyBackShort] = getShortPoins(price, short, symbol)
-      let [entryLong, buyBackLong] = getLongPoins(price, long, symbol)
+      let [entryShort, buyBackShort] = getPositionsPoints(
+        'short',
+        price,
+        shortOrderBook,
+        symbol
+      )
+      let [entryLong, buyBackLong] = getPositionsPoints(
+        'long',
+        price,
+        longOrderBook,
+        symbol
+      )
 
       if (entryLong === buyBackLong) {
         buyBackLong = div(sub(mul(3, entryLong), entryShort), 2)
