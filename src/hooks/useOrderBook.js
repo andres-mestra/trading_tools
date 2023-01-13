@@ -3,6 +3,10 @@ import { useDecimal } from './useDecimal'
 import { getCurrentPrice, getOrderBook } from '../services/binanceService'
 import { calcRange } from '../helpers/calcRange'
 
+const ETH_SYMBOL = 'eth'
+const ETH_RANGE_EXT = 50
+const ETH_RANGE_INT = 10
+
 export const useOrderBook = () => {
   const isGetData = useRef(false)
   const { div, sub, mul, plus, asNumber } = useDecimal()
@@ -116,9 +120,13 @@ export const useOrderBook = () => {
     return subOrders
   }
 
-  function getShortPoins(price, shortBook) {
-    const sizeIntervalExt = calcRange(price, 'external')
-    const sizeIntervalInt = calcRange(sizeIntervalExt, 'internal')
+  function getShortPoins(price, shortBook, symbol) {
+    const sizeIntervalExt =
+      symbol === ETH_SYMBOL ? ETH_RANGE_EXT : calcRange(price, 'external')
+    const sizeIntervalInt =
+      symbol === ETH_SYMBOL
+        ? ETH_RANGE_INT
+        : calcRange(sizeIntervalExt, 'internal')
     const minPrice = asNumber(shortBook[0][0])
     const [, firtsLimitExternal] = getLocalLimit(
       minPrice,
@@ -147,11 +155,15 @@ export const useOrderBook = () => {
     return [entryShort, buyBackPoint]
   }
 
-  function getLongPoins(price, longBook) {
+  function getLongPoins(price, longBook, symbol) {
     // EXTERNAL
     const type = 'long'
-    const sizeIntervalExt = calcRange(price, 'external')
-    const sizeIntervalInt = calcRange(sizeIntervalExt, 'internal')
+    const sizeIntervalExt =
+      symbol === ETH_SYMBOL ? ETH_RANGE_EXT : calcRange(price, 'external')
+    const sizeIntervalInt =
+      symbol === ETH_SYMBOL
+        ? ETH_RANGE_INT
+        : calcRange(sizeIntervalExt, 'internal')
     const minPrice = asNumber(longBook[0][0])
 
     const [firtsLimitExternal] = getLocalLimit(minPrice, price, sizeIntervalExt)
@@ -187,8 +199,8 @@ export const useOrderBook = () => {
       price = asNumber(price)
       let { asks: short, bids: long } = await getOrderBook(symbol)
 
-      let [entryShort, buyBackShort] = getShortPoins(price, short)
-      let [entryLong, buyBackLong] = getLongPoins(price, long)
+      let [entryShort, buyBackShort] = getShortPoins(price, short, symbol)
+      let [entryLong, buyBackLong] = getLongPoins(price, long, symbol)
 
       if (entryLong === buyBackLong) {
         buyBackLong = div(sub(mul(3, entryLong), entryShort), 2)
