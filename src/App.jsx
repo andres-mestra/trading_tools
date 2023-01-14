@@ -1,12 +1,11 @@
-import { RouterProvider } from 'react-router-dom'
 import { GlobalStyles, ThemeGlobal } from './theme/ThemeGlobal'
-import { router } from './router'
+import { Router } from './Router'
 
 function App() {
   return (
     <ThemeGlobal>
       <GlobalStyles />
-      <RouterProvider router={router} />
+      <Router />
     </ThemeGlobal>
   )
 }
