@@ -1,7 +1,7 @@
 {
   "name": "oraculo",
   "version": "1.2.1",
-  "homepage": "https://andres-mestra.github.io/trading_tools",
+  "homepage": "https://andres-mestra.github.io/trading_tools/#",
   "type": "module",
   "scripts": {
     "dev": "vite",
