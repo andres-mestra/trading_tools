@@ -1,13 +1,15 @@
 import { Typography } from '@mui/material'
-import { Container } from './style'
+import { Brand, Container } from './style'
 
 export function Home() {
   return (
     <Container>
-      <Typography variant="h1" fontWeight="bold" color="#ffffff">
+      <Brand variant="h1" fontWeight="bold">
         Trading tools
+      </Brand>
+      <Typography variant="h3" fontWeight="bold">
+        Spartans
       </Typography>
-      <Typography variant="h3">Spartans</Typography>
     </Container>
   )
 }
