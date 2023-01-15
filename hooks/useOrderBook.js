@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { useDecimal } from './useDecimal'
-import { getCurrentPrice, getOrderBook } from '../services/binanceService'
-import { calcRange } from '../helpers/calcRange'
+import { getCurrentPrice, getOrderBook } from 'services/binanceService'
+import { calcRange } from 'helpers/calcRange'
 
 const ETH_SYMBOL = 'eth'
 const ETH_RANGE_EXT = 50

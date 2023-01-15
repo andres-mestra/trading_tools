@@ -1,25 +1,25 @@
-import { version } from '../../../package.json'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { version } from 'package.json'
+import { useEffect, useRef, useState } from 'react'
 import { Box, Typography, Paper, Stack, Button, Tooltip } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
-import { FormAddCoin } from '../../components/FormAddCoin'
-import { TableCoins } from '../../components/TableCoins'
-import { TableCoinsItem } from '../../components/TableCoinsItem'
-import { ToggleThemeMode } from '../../components/ToggleThemeMode'
+import { FormAddCoin } from 'components/FormAddCoin'
+import { TableCoins } from 'components/TableCoins'
+import { TableCoinsItem } from 'components/TableCoinsItem'
+import { ToggleThemeMode } from 'components/ToggleThemeMode'
 
-import { useFormCoin } from '../../hooks/useFormCoin'
-import { useOrderBook } from '../../hooks/useOrderBook'
-import { useLocalStorage } from '../../hooks/useLocalStorage'
-import { calcDistance } from '../../helpers/distanceUtils'
-import { calcBounces } from '../../helpers/calcBounces'
-import { useDecimal } from '../../hooks/useDecimal'
-import { useImportExportJson } from '../../hooks/useImportExportJson'
-import { useTwoToOne } from '../../hooks/useTwoToOne'
-import { useNotify } from '../../hooks/useNotify'
-import { binanceSocketURL } from '../../services/binanceService'
+import { useFormCoin } from 'hooks/useFormCoin'
+import { useOrderBook } from 'hooks/useOrderBook'
+import { useLocalStorage } from 'hooks/useLocalStorage'
+import { calcDistance } from 'helpers/distanceUtils'
+import { calcBounces } from 'helpers/calcBounces'
+import { useDecimal } from 'hooks/useDecimal'
+import { useImportExportJson } from 'hooks/useImportExportJson'
+import { useTwoToOne } from 'hooks/useTwoToOne'
+import { useNotify } from 'hooks/useNotify'
+import { binanceSocketURL } from 'services/binanceService'
 
-export function Oraculo() {
+export default function OraculoPage() {
   const socketsRef = useRef([])
   const [getEntryPoints] = useOrderBook()
   const [openForm, setOpenForm] = useState(false)

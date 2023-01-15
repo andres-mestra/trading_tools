@@ -1,5 +1,18 @@
 import { Paper, Typography, styled } from '@mui/material'
 
+export default function HomePage() {
+  return (
+    <Container>
+      <Brand variant="h1" fontWeight="bold">
+        Trading tools
+      </Brand>
+      <Typography variant="h3" fontWeight="bold">
+        Spartans
+      </Typography>
+    </Container>
+  )
+}
+
 export const Container = styled(Paper)`
   display: flex;
   flex-direction: column;

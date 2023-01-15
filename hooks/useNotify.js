@@ -1,10 +1,8 @@
-import { useDeviceInfo } from './useDeviceInfo'
+import { isMobile } from 'react-device-detect'
 
 export const useNotify = () => {
-  const [deviceInfo] = useDeviceInfo()
-
   const onNotify = (message) => {
-    if ('Notification' in window && !deviceInfo.isMovil) {
+    if (!isMobile) {
       new Notification('Notification', {
         body: message,
         dir: 'ltr',
@@ -13,8 +11,7 @@ export const useNotify = () => {
   }
 
   const onActiveNotify = () => {
-    if (!('Notification' in window) && !deviceInfo.isMovil)
-      return alert('This browser does not support nitifications.')
+    if (isMobile) return alert('This browser does not support nitifications.')
 
     Notification.requestPermission().then((permission) => {
       if (permission === 'granted') {
