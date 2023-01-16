@@ -15,6 +15,7 @@ export const NavBar = () => {
   return (
     <>
       <IconButton
+        color="primary"
         sx={{ position: 'absolute', right: 5, top: 5 }}
         onClick={() => toggleDrawer(true)}
       >

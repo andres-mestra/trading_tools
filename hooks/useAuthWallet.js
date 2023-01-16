@@ -40,7 +40,6 @@ export function useAuthWallet() {
       const result = await contract.methods.balanceOf(account).call()
       const nTokensInBnb = library.utils.fromWei(result)
       const amount = await convertBnbToUSD(asNumber(nTokensInBnb))
-      //const amount = 1
       if (amount >= MIN_OGT_AMOUNT_IN_USD) {
         setHasMinOGT(true)
       } else {

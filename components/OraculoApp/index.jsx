@@ -18,17 +18,24 @@ import { useImportExportJson } from 'hooks/useImportExportJson'
 import { useTwoToOne } from 'hooks/useTwoToOne'
 import { useNotify } from 'hooks/useNotify'
 import { binanceSocketURL } from 'services/binanceService'
+import { SimpleBackdrop } from 'components/SimpleBackdrop'
 
-export function OraculoApp() {
+export function OraculoApp({
+  longKeyStorage,
+  shortKeyStorage,
+  title = 'Oraculo',
+  isTwoOne = false,
+}) {
   const socketsRef = useRef([])
   const [getEntryPoints] = useOrderBook()
+  const [loading, setLoading] = useState(null)
   const [openForm, setOpenForm] = useState(false)
-  const [shortsStorage, setShortsStorage] = useLocalStorage('shorts_data', [])
-  const [longsStorage, setLongsStorage] = useLocalStorage('longs_data', [])
+  const [shortsStorage, setShortsStorage] = useLocalStorage(shortKeyStorage, [])
+  const [longsStorage, setLongsStorage] = useLocalStorage(longKeyStorage, [])
   const [longs, setLongs] = useState([...longsStorage])
   const [shorts, setShorts] = useState([...shortsStorage])
   const { asNumber } = useDecimal()
-  const [handleGetTwoToOne] = useTwoToOne()
+  const [onGetTwoToOne] = useTwoToOne()
   const [importJson, exportJson, refInputImport] = useImportExportJson()
   const [nCoins, setNCoins] = useState(longs.length + shorts.length)
   const {
@@ -129,6 +136,42 @@ export function OraculoApp() {
     onResetForm()
   }
 
+  const onLoadingCoin = (symbol) => {
+    setLoading(symbol)
+  }
+
+  const handleGetTwoToOne = async () => {
+    onGetTwoToOne(onLoadingCoin)
+      .then((points) => {
+        let [longs, shorts] = points
+        longs = longs.map(({ symbol, entry, target, buyBack }) => ({
+          symbol,
+          entry,
+          target,
+          buyBack,
+          type: 'long',
+          bounces: 0,
+          lastPrice: 1,
+          distanceEntry: 1,
+        }))
+
+        shorts = shorts.map(({ entry, target, buyBack }) => ({
+          symbol,
+          entry,
+          target,
+          buyBack,
+          type: 'short',
+          bounces: 0,
+          lastPrice: 1,
+          distanceEntry: 1,
+        }))
+
+        setSetterPosition('long')(() => [...longs])
+        setSetterPosition('short')(() => [...longs])
+      })
+      .finally(() => setLoading(null))
+  }
+
   const onAlert = (notify, distanceEntry, message) => {
     if (distanceEntry >= 0 && distanceEntry < 0.3) {
       if (notify === undefined || notify === false) {
@@ -217,6 +260,11 @@ export function OraculoApp() {
 
   return (
     <Box sx={{ width: '100%', bgcolor: 'background.default' }}>
+      {loading && (
+        <SimpleBackdrop>
+          <Typography variant="h4">{loading}</Typography>
+        </SimpleBackdrop>
+      )}
       <Box
         component={Paper}
         sx={{
@@ -232,12 +280,20 @@ export function OraculoApp() {
               variant="h1"
               sx={{ fontSize: '2.5rem', fontWeight: 'bold' }}
             >
-              Oraculo
+              {title}
             </Typography>
 
-            <Button variant="contained" size="small" onClick={handleAddCoin}>
-              Add Coin
-            </Button>
+            {isTwoOne ? (
+              <Tooltip title="Ejecutar consulta">
+                <Button variant="outlined" onClick={handleGetTwoToOne}>
+                  Dos / Uno
+                </Button>
+              </Tooltip>
+            ) : (
+              <Button variant="contained" size="small" onClick={handleAddCoin}>
+                Add Coin
+              </Button>
+            )}
             <Button
               size="small"
               variant="contained"
@@ -264,23 +320,21 @@ export function OraculoApp() {
                 onChange={handleImportPoints}
               />
             </Button>
-            <Tooltip title="Ejecutar, luego ver tabla en consola del navegador">
-              <Button variant="outlined" onClick={handleGetTwoToOne}>
-                Dos / Uno
-              </Button>
-            </Tooltip>
+
             <Button variant="outlined" onClick={onActiveNotify}>
               notificar
             </Button>
           </Stack>
-          <FormAddCoin
-            open={openForm}
-            isAdd={isAddCoin}
-            newCoin={currentCoin}
-            onChange={onFormCoin}
-            onSubmit={handleSubmitForm}
-            onClose={handleCloseForm}
-          />
+          {!isTwoOne && (
+            <FormAddCoin
+              open={openForm}
+              isAdd={isAddCoin}
+              newCoin={currentCoin}
+              onChange={onFormCoin}
+              onSubmit={handleSubmitForm}
+              onClose={handleCloseForm}
+            />
+          )}
           <Stack direction="row" gap={2} justifyContent="space-between">
             <Stack gap={2}>
               <Typography variant="h3" color="success.light">

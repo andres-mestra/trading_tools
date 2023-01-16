@@ -5,7 +5,7 @@ export function useTwoToOne() {
   const { abs, sub, div, mul } = useDecimal()
   const [getEntryPoints] = useOrderBook()
 
-  const handleGetTwoToOne = async () => {
+  const handleGetTwoToOne = async (callbackCurrentCoin) => {
     const resp = await fetch('https://fapi.binance.com/fapi/v1/exchangeInfo')
     const data = await resp.json()
     const { symbols } = data
@@ -23,7 +23,7 @@ export function useTwoToOne() {
     const shorts = []
 
     for (const symbol of newSymbols) {
-      console.log(symbol)
+      callbackCurrentCoin(symbol)
       const points = await getEntryPoints(symbol, 'all')
       if (points !== undefined) {
         const { shortPoints, longPoints } = points
@@ -75,13 +75,7 @@ export function useTwoToOne() {
       }
     }
 
-    console.log(
-      'MONEDAS DOS A UNO \nSE RECOMIENDAN LAS QUE TENGAN UNA DISTANCIA MAYOR A 2'
-    )
-    console.log('LONGS')
-    console.table(longs)
-    console.log('SHORT')
-    console.table(shorts)
+    return [longs, shorts]
   }
 
   return [handleGetTwoToOne]
