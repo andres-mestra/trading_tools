@@ -155,7 +155,7 @@ export function OraculoApp({
           distanceEntry: 1,
         }))
 
-        shorts = shorts.map(({ entry, target, buyBack }) => ({
+        shorts = shorts.map(({ symbol, entry, target, buyBack }) => ({
           symbol,
           entry,
           target,
