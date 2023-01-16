@@ -48,7 +48,6 @@ export function GlobalStyles() {
           margin: 0;
           padding: 0;
           box-sizing: inherit;
-          user-select: none;
         }
 
         body {
