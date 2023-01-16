@@ -167,9 +167,14 @@ export function OraculoApp({
         }))
 
         setSetterPosition('long')(() => [...longs])
-        setSetterPosition('short')(() => [...longs])
+        setSetterPosition('short')(() => [...shorts])
+        setStoragePosition('long')(() => [...longs])
+        setStoragePosition('short')(() => [...shorts])
       })
-      .finally(() => setLoading(null))
+      .finally(() => {
+        setLoading(null)
+        onNotify('Finalizo el análisis dos a uno')
+      })
   }
 
   const onAlert = (notify, distanceEntry, message) => {
@@ -215,6 +220,7 @@ export function OraculoApp({
     const longsSymbols = longs.map(({ symbol }) => symbol)
     const shortsSymbols = shorts.map(({ symbol }) => symbol)
     const symbols = [...new Set(longsSymbols.concat(shortsSymbols))]
+    console.log({ symbols })
 
     if (symbols.length) {
       const symbolsParams = symbols
@@ -251,6 +257,7 @@ export function OraculoApp({
   useEffect(() => {
     const length = longs.length + shorts.length
     if (length !== nCoins) {
+      console.log('GENERAR SOCKT')
       socketsRef.current?.socket?.close()
       socketsRef.current = null
       socketsRef.current = generateSocket()

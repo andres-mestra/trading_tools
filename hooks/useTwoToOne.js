@@ -16,7 +16,7 @@ export function useTwoToOne() {
       const isPerpetual = contractType === 'PERPETUAL'
       const isTrading = status === 'TRADING'
       if (isUsdt && isPerpetual && isTrading)
-        newSymbols.push(symbol.replace('USDT', ''))
+        newSymbols.push(symbol.replace('USDT', '').toLowerCase())
     })
 
     const longs = []
