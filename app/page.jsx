@@ -2,6 +2,7 @@
 
 import { Alert, Button, Paper, Typography } from '@mui/material'
 import { OgtLink } from 'components/OgtLink'
+import { SimpleBackdrop } from 'components/SimpleBackdrop'
 import { useAuthConext } from 'context/AuthContext'
 
 export default function HomePage() {
@@ -37,7 +38,8 @@ export default function HomePage() {
                 Verificar Balance de OGT
               </Button>
               <Alert severity="warning">
-                Debes verificar la cantidad de OGT que tienes en la wallet
+                Debes verificar la cantidad de OGT que tienes en la wallet o no
+                tienes lo equivalente a 1 USDT
               </Alert>
             </>
           )}

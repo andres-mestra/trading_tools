@@ -35,14 +35,15 @@ export function useAuthWallet() {
   }
 
   const vefiryOgtAmount = async () => {
-    setLoading(true)
     if (active) {
+      setLoading(true)
       const contract = new library.eth.Contract(balanceOfABI, OGTAddress)
       const result = await contract.methods.balanceOf(account).call()
       const nTokensInBnb = library.utils.fromWei(result)
       const amount = await convertBnbToUSD(asNumber(nTokensInBnb))
       const hasOGT = amount >= MIN_OGT_AMOUNT_IN_USD
       setHasMinOGT(hasOGT)
+      setLoading(false)
       return hasOGT
     } else {
       return false
