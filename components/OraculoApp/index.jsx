@@ -220,7 +220,6 @@ export function OraculoApp({
     const longsSymbols = longs.map(({ symbol }) => symbol)
     const shortsSymbols = shorts.map(({ symbol }) => symbol)
     const symbols = [...new Set(longsSymbols.concat(shortsSymbols))]
-    console.log({ symbols })
 
     if (symbols.length) {
       const symbolsParams = symbols
