@@ -58,7 +58,7 @@ export function useLocalStorage(key, initialValue) {
     }
   }, [])
 
-  return [storedValue, setValue]
+  return [storedValue, setValue, readValue]
 }
 
 function parseJSON(value) {

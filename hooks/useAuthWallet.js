@@ -30,6 +30,7 @@ export function useAuthWallet() {
     setLoading(true)
     deactivate()
     localStorage.removeItem('previouslyConnected')
+    setHasMinOGT(false)
     setLoading(false)
   }
 
@@ -40,15 +41,12 @@ export function useAuthWallet() {
       const result = await contract.methods.balanceOf(account).call()
       const nTokensInBnb = library.utils.fromWei(result)
       const amount = await convertBnbToUSD(asNumber(nTokensInBnb))
-      if (amount >= MIN_OGT_AMOUNT_IN_USD) {
-        setHasMinOGT(true)
-      } else {
-        setHasMinOGT(false)
-      }
+      const hasOGT = amount >= MIN_OGT_AMOUNT_IN_USD
+      setHasMinOGT(hasOGT)
+      return hasOGT
     } else {
-      setHasMinOGT(false)
+      return false
     }
-    setLoading(false)
   }
 
   useEffect(() => {
@@ -65,8 +63,8 @@ export function useAuthWallet() {
     account,
     active,
     loading,
-    hasMinOGT,
     networkName,
-    isAuth: hasMinOGT && activate,
+    hasMinOGT,
+    setHasMinOGT,
   }
 }

@@ -1,6 +1,7 @@
 'use client'
 
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useEffect } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import { useAuthWallet } from 'hooks/useAuthWallet'
 
 export const AuthContext = createContext()
@@ -11,6 +12,8 @@ export const useAuthConext = () => {
 }
 
 export const AuthProvider = ({ children }) => {
+  const router = useRouter()
+  const pathname = usePathname()
   const {
     isAuth,
     error,
@@ -21,8 +24,21 @@ export const AuthProvider = ({ children }) => {
     networkName,
     connect,
     disconnect,
+    setHasMinOGT,
     vefiryOgtAmount,
   } = useAuthWallet()
+
+  useEffect(() => {
+    if (localStorage.getItem('previouslyConnected') !== 'true') {
+      if (pathname !== '/') router.push('/')
+    } else {
+      if (active && pathname !== '/') {
+        vefiryOgtAmount().then((hasOGT) => {
+          if (!hasOGT) router.push('/')
+        })
+      }
+    }
+  }, [active, pathname])
 
   return (
     <AuthContext.Provider

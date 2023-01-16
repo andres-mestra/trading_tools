@@ -1,4 +1,3 @@
-import { RedirectView } from 'components/RedirectView'
 import { Providers } from './Providers'
 import { NavBar } from 'components/NavBar'
 
@@ -9,7 +8,7 @@ export default function RootLayout({ children }) {
       <body>
         <Providers>
           <NavBar />
-          <RedirectView> {children}</RedirectView>
+          {children}
         </Providers>
       </body>
     </html>
