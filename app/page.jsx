@@ -18,7 +18,7 @@ export default function HomePage() {
   } = useAuthConext()
 
   return (
-    <Paper className="container_paper">
+    <Paper className="container_paper" sx={{ textAlign: 'center' }}>
       <Typography className="brand" variant="h1" fontWeight="bold">
         Trading tools
       </Typography>
