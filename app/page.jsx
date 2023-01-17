@@ -2,7 +2,6 @@
 
 import { Alert, Button, Paper, Typography } from '@mui/material'
 import { OgtLink } from 'components/OgtLink'
-import { SimpleBackdrop } from 'components/SimpleBackdrop'
 import { useAuthConext } from 'context/AuthContext'
 
 export default function HomePage() {

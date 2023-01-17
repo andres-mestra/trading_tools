@@ -36,9 +36,11 @@ export const AuthProvider = ({ children }) => {
         vefiryOgtAmount().then((hasOGT) => {
           if (!hasOGT) router.push('/')
         })
+      } else if (error) {
+        router.push('/')
       }
     }
-  }, [active, pathname])
+  }, [active, pathname, error])
 
   return (
     <AuthContext.Provider
