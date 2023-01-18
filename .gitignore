@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 package-lock.json
 .next
+.env.development
+.env.production
+.env.test
+.env

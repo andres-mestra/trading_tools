@@ -24,22 +24,27 @@ export const AuthProvider = ({ children }) => {
     networkName,
     connect,
     disconnect,
-    setHasMinOGT,
     vefiryOgtAmount,
   } = useAuthWallet()
 
-  useEffect(() => {
+  const validateAccess = () => {
+    if (localStorage.getItem('isVIP') === 'true') return
+
     if (localStorage.getItem('previouslyConnected') !== 'true') {
-      if (pathname !== '/') router.push('/')
-    } else {
-      if (active && pathname !== '/') {
-        vefiryOgtAmount().then((hasOGT) => {
-          if (!hasOGT) router.push('/')
-        })
-      } else if (error) {
-        router.push('/')
-      }
+      if (pathname !== '/') return router.push('/')
     }
+
+    if (active && pathname !== '/') {
+      vefiryOgtAmount().then((hasOGT) => {
+        if (!hasOGT) router.push('/')
+      })
+    } else if (error) {
+      router.push('/')
+    }
+  }
+
+  useEffect(() => {
+    validateAccess()
   }, [active, pathname, error])
 
   return (
