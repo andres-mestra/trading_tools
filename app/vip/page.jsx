@@ -11,6 +11,7 @@ import {
 } from '@mui/material'
 import { SimpleBackdrop } from 'components/SimpleBackdrop'
 import { useRouter } from 'next/navigation'
+import { postValidateVIP } from 'services/postValidateVIP'
 
 export default function VipPage() {
   const router = useRouter()
@@ -20,29 +21,18 @@ export default function VipPage() {
 
   async function onValidateCode() {
     setloading(true)
-    try {
-      const resp = await fetch('/api/vip', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code }),
-      })
 
-      const data = await resp.json()
+    const data = await postValidateVIP(code)
 
-      if (data.isVIP) {
-        localStorage.setItem('isVIP', true)
-        localStorage.setItem('previouslyConnected', true)
-        router.push('/oraculo')
-      } else {
-        localStorage.removeItem('isVIP')
-        setError('Código invalido')
-      }
-      setloading(false)
-    } catch (error) {
+    if (data.isVIP) {
+      localStorage.setItem('isVIP', true)
+      localStorage.setItem('previouslyConnected', true)
+      router.push('/oraculo')
+    } else {
       localStorage.removeItem('isVIP')
-      setError(error?.message)
-      setloading(false)
+      data?.error ? setError(data?.error?.message) : setError('Código invalido')
     }
+    setloading(false)
   }
 
   const handleSubmit = (event) => {
