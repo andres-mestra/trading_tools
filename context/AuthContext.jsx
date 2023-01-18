@@ -28,13 +28,13 @@ export const AuthProvider = ({ children }) => {
   } = useAuthWallet()
 
   const validateAccess = () => {
-    if (localStorage.getItem('isVIP') === 'true') return
-
     if (localStorage.getItem('previouslyConnected') !== 'true') {
-      if (pathname !== '/') return router.push('/')
+      if (pathname !== '/' && pathname !== '/vip') return router.push('/')
     }
 
-    if (active && pathname !== '/') {
+    if (localStorage.getItem('isVIP') === 'true') return
+
+    if (active && pathname !== '/' && pathname !== '/vip') {
       vefiryOgtAmount().then((hasOGT) => {
         if (!hasOGT) router.push('/')
       })

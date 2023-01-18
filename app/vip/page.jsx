@@ -31,6 +31,7 @@ export default function VipPage() {
 
       if (data.isVIP) {
         localStorage.setItem('isVIP', true)
+        localStorage.setItem('previouslyConnected', true)
         router.push('/oraculo')
       } else {
         localStorage.removeItem('isVIP')
