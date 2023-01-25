@@ -2,11 +2,16 @@ import { Decimal } from 'decimal.js'
 Decimal.set({ precision: 7 })
 
 export function useDecimal() {
-  function plus(a, b) {
-    const x = new Decimal(a)
-    const y = new Decimal(b)
+  function plus(...args) {
+    let current = 0
 
-    return x.plus(y).toNumber()
+    args.forEach((n) => {
+      const x = new Decimal(current)
+      const y = new Decimal(n)
+      current = x.plus(y).toNumber()
+    })
+
+    return current
   }
 
   function sub(a, b) {
