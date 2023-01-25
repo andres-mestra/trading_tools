@@ -203,7 +203,8 @@ export function OraculoApp({
       bounces = calcBounces(bounces, distanceEntry)
 
       let notify = coin?.notify
-      notify = onAlert(`${type.toUpperCase()} ${ticket.toUpperCase()} !!!`)
+      const messageNotify = `${type.toUpperCase()} ${ticket.toUpperCase()} !!!`
+      notify = onAlert(notify, distanceEntry, messageNotify)
 
       newState[coinIndex] = {
         ...coin,
