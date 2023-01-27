@@ -37,7 +37,7 @@ export function useTwoToOne() {
           sub(shortPoints.buyBack, shortPoints.entry)
         )
 
-        if (ratioLong >= 1.66) {
+        if (ratioLong >= 2) {
           const distance = mul(
             div(sub(shortPoints.entry, longPoints.entry), longPoints.entry),
             100
@@ -53,7 +53,7 @@ export function useTwoToOne() {
           })
         }
 
-        if (ratioShort >= 1.66) {
+        if (ratioShort >= 2) {
           const distance = mul(
             div(
               abs(sub(longPoints.entry, shortPoints.entry)),
