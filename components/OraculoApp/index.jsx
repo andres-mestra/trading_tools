@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Typography, Paper, Stack, Button, Tooltip } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
@@ -8,6 +8,7 @@ import { FormAddCoin } from 'components/FormAddCoin'
 import { TableCoins } from 'components/TableCoins'
 import { TableCoinsItem } from 'components/TableCoinsItem'
 
+import { isMobile } from 'react-device-detect'
 import { useFormCoin } from 'hooks/useFormCoin'
 import { useOrderBook } from 'hooks/useOrderBook'
 import { useLocalStorage } from 'hooks/useLocalStorage'
@@ -265,11 +266,17 @@ export function OraculoApp({
     }
   }, [longs, shorts])
 
+  const containerTablesStyled = useMemo(() => {
+    return isMobile
+      ? { flexWrap: 'wrap', justifyContent: 'center' }
+      : { justifyContent: 'space-between' }
+  }, isMobile)
+
   return (
     <Box sx={{ width: '100%', bgcolor: 'background.default' }}>
       {loading && (
         <SimpleBackdrop>
-          <Typography variant="h4">{loading}</Typography>
+          <Typography variant="h3">{loading}</Typography>
         </SimpleBackdrop>
       )}
       <Box
@@ -342,7 +349,12 @@ export function OraculoApp({
               onClose={handleCloseForm}
             />
           )}
-          <Stack direction="row" gap={2} justifyContent="space-between">
+          <Stack
+            direction="row"
+            gap={2}
+            justifyContent="space-between"
+            sx={{ ...containerTablesStyled }}
+          >
             <Stack gap={2}>
               <Typography variant="h3" color="success.light">
                 Long
