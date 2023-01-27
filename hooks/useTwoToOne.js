@@ -42,15 +42,18 @@ export function useTwoToOne() {
             div(sub(shortPoints.entry, longPoints.entry), longPoints.entry),
             100
           )
-          const { entry, buyBack } = longPoints
-          longs.push({
-            symbol,
-            entry,
-            target: shortPoints.entry,
-            buyBack,
-            distance,
-            ratio: ratioLong,
-          })
+
+          if (distance >= 1.8) {
+            const { entry, buyBack } = longPoints
+            longs.push({
+              symbol,
+              entry,
+              target: shortPoints.entry,
+              buyBack,
+              distance,
+              ratio: ratioLong,
+            })
+          }
         }
 
         if (ratioShort >= 2) {
@@ -62,15 +65,17 @@ export function useTwoToOne() {
             100
           )
 
-          const { entry, buyBack } = shortPoints
-          shorts.push({
-            symbol,
-            entry,
-            target: longPoints.entry,
-            buyBack,
-            distance,
-            ratio: ratioShort,
-          })
+          if (distance >= 1.8) {
+            const { entry, buyBack } = shortPoints
+            shorts.push({
+              symbol,
+              entry,
+              target: longPoints.entry,
+              buyBack,
+              distance,
+              ratio: ratioShort,
+            })
+          }
         }
       }
     }
