@@ -268,8 +268,8 @@ export function OraculoApp({
   }, [longs, shorts])
 
   const containerTablesStyled = isMd
-    ? { justifyContent: 'space-between', brackground: 'blue' }
-    : { flexWrap: 'wrap', justifyContent: 'center', background: 'red' }
+    ? { justifyContent: 'space-between' }
+    : { flexWrap: 'wrap', justifyContent: 'center' }
 
   return (
     <Box sx={{ width: '100%', bgcolor: 'background.default' }}>
