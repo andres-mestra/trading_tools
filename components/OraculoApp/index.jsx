@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Box, Typography, Paper, Stack, Button, Tooltip } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
@@ -8,7 +8,6 @@ import { FormAddCoin } from 'components/FormAddCoin'
 import { TableCoins } from 'components/TableCoins'
 import { TableCoinsItem } from 'components/TableCoinsItem'
 
-import { isMobile } from 'react-device-detect'
 import { useFormCoin } from 'hooks/useFormCoin'
 import { useOrderBook } from 'hooks/useOrderBook'
 import { useLocalStorage } from 'hooks/useLocalStorage'
@@ -20,6 +19,7 @@ import { useTwoToOne } from 'hooks/useTwoToOne'
 import { useNotify } from 'hooks/useNotify'
 import { binanceSocketURL } from 'services/binanceService'
 import { SimpleBackdrop } from 'components/SimpleBackdrop'
+import { useMediaQueryMd } from 'hooks/useMediaQueryMd'
 
 export function OraculoApp({
   longKeyStorage,
@@ -27,6 +27,7 @@ export function OraculoApp({
   title = 'Oraculo',
   isTwoOne = false,
 }) {
+  const isMd = useMediaQueryMd()
   const socketsRef = useRef([])
   const [getEntryPoints] = useOrderBook()
   const [loading, setLoading] = useState(null)
@@ -266,11 +267,9 @@ export function OraculoApp({
     }
   }, [longs, shorts])
 
-  const containerTablesStyled = useMemo(() => {
-    return isMobile
-      ? { flexWrap: 'wrap', justifyContent: 'center' }
-      : { justifyContent: 'space-between' }
-  }, isMobile)
+  const containerTablesStyled = isMd
+    ? { justifyContent: 'space-between', brackground: 'blue' }
+    : { flexWrap: 'wrap', justifyContent: 'center', background: 'red' }
 
   return (
     <Box sx={{ width: '100%', bgcolor: 'background.default' }}>
