@@ -24,6 +24,7 @@
   font-size: 16px;
   border: 1px solid #e0e3eb;
   width: max-content;
+  animation: 340s linear 1s infinite running widgetAnimation;
 }
 
 .widget_item {
@@ -55,4 +56,16 @@
 
 .widget_change_down {
   color: #d32f2f;
+}
+
+
+
+@keyframes widgetAnimation {
+  from {
+    transform: translate(0%);
+  }
+  
+  to { 
+    transform: translateX(calc(100vw - 100%));
+  }
 }

@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { useDecimal } from 'hooks/useDecimal'
 import { getCandles, getSymbols } from 'services/binanceService'
 import { WidgetItem } from './WidgetItem'
@@ -10,7 +9,6 @@ import './style.css'
 const TIME_INTERVAL = 300000 // 5 minutes
 
 export const MarketWidget = () => {
-  const widgetRef = useRef(null)
   const [coins, setCoins] = useState([])
   const { div, mul, sub } = useDecimal()
 
@@ -60,26 +58,11 @@ export const MarketWidget = () => {
     <div className="widget_container">
       <div className="widget_line_container">
         {coins?.length ? (
-          <AnimatePresence>
-            <motion.ol
-              key="widget_marquee"
-              className="widget_line"
-              ref={widgetRef}
-              animate={{
-                x: 'calc(100vw - 100%)',
-              }}
-              transition={{
-                delay: 2,
-                repeat: Infinity,
-                ease: [0, 0, 0, 0],
-                duration: 3 * coins?.length,
-              }}
-            >
-              {coins.map(({ symbol, change }) => (
-                <WidgetItem key={symbol} symbol={symbol} change={change} />
-              ))}
-            </motion.ol>
-          </AnimatePresence>
+          <ol key="widget_marquee" className="widget_line">
+            {coins.map(({ symbol, change }) => (
+              <WidgetItem key={symbol} symbol={symbol} change={change} />
+            ))}
+          </ol>
         ) : (
           <p>Loading...</p>
         )}
