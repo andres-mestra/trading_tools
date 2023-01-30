@@ -1,5 +1,5 @@
 'use client'
-import { memo, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useDecimal } from 'hooks/useDecimal'
 import { getCandles, getSymbols } from 'services/binanceService'
