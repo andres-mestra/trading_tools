@@ -338,16 +338,14 @@ export function OraculoApp({
               notificar
             </Button>
           </Stack>
-          {!isTwoOne && (
-            <FormAddCoin
-              open={openForm}
-              isAdd={isAddCoin}
-              newCoin={currentCoin}
-              onChange={onFormCoin}
-              onSubmit={handleSubmitForm}
-              onClose={handleCloseForm}
-            />
-          )}
+          <FormAddCoin
+            open={openForm}
+            isAdd={isAddCoin}
+            newCoin={currentCoin}
+            onChange={onFormCoin}
+            onSubmit={handleSubmitForm}
+            onClose={handleCloseForm}
+          />
           <Stack
             direction="row"
             gap={2}

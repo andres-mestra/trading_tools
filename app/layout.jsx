@@ -1,5 +1,6 @@
 import { Providers } from './Providers'
 import { NavBar } from 'components/NavBar'
+import { MarketWidget } from 'components/MarketWidget'
 
 export default function RootLayout({ children }) {
   return (
@@ -9,6 +10,7 @@ export default function RootLayout({ children }) {
         <Providers>
           <NavBar />
           {children}
+          <MarketWidget />
         </Providers>
       </body>
     </html>
