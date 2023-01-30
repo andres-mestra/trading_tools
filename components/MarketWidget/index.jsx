@@ -56,8 +56,6 @@ export const MarketWidget = () => {
     }
   }, [])
 
-  console.log({ width: widgetRef.current?.offsetWidth })
-
   return (
     <div className="widget_container">
       <div className="widget_line_container">
