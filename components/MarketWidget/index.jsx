@@ -63,6 +63,7 @@ export const MarketWidget = memo(() => {
       <div className="widget_line_container">
         {coins?.length ? (
           <motion.ol
+            key="widget_marquee"
             className="widget_line"
             ref={widgetRef}
             animate={{
