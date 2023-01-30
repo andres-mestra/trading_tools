@@ -1,23 +1,13 @@
 import { useDecimal } from './useDecimal'
 import { useOrderBook } from './useOrderBook'
+import { getSymbols } from 'services/binanceService'
 
 export function useTwoToOne() {
   const { abs, sub, div, mul } = useDecimal()
   const [getEntryPoints] = useOrderBook()
 
   const handleGetTwoToOne = async (callbackCurrentCoin) => {
-    const resp = await fetch('https://fapi.binance.com/fapi/v1/exchangeInfo')
-    const data = await resp.json()
-    const { symbols } = data
-    const newSymbols = []
-    symbols.forEach((s) => {
-      const { symbol, contractType, status } = s
-      const isUsdt = symbol.includes('USDT')
-      const isPerpetual = contractType === 'PERPETUAL'
-      const isTrading = status === 'TRADING'
-      if (isUsdt && isPerpetual && isTrading)
-        newSymbols.push(symbol.replace('USDT', '').toLowerCase())
-    })
+    const newSymbols = await getSymbols()
 
     const longs = []
     const shorts = []
