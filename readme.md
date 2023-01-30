@@ -4,7 +4,7 @@ Calculate approximate entry points based on the order book for a cryptocurrency 
 
 ## Web
 
-https://andres-mestra.github.io/oraculo
+https://trading-tools-spartans.vercel.app
 
 ## Install dependencies
 
