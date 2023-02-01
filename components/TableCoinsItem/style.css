@@ -1,0 +1,6 @@
+.item_actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  place-items: center center;
+}
