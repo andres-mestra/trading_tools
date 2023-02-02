@@ -13,6 +13,13 @@ import Alert from '@mui/material/Alert'
 import { useState } from 'react'
 import { useDecimal } from '../../hooks/useDecimal'
 
+const inputProps = {
+  inputMode: 'numeric',
+  min: 0,
+  step: 'any',
+  autoComplete: 'off',
+}
+
 export function FormAddCoin({
   open,
   isAdd,
@@ -92,6 +99,7 @@ export function FormAddCoin({
                   <TextField
                     required
                     type="number"
+                    inputProps={{ ...inputProps }}
                     size="small"
                     label="Entry"
                     name="entry"
@@ -101,6 +109,7 @@ export function FormAddCoin({
                   <TextField
                     required
                     type="number"
+                    inputProps={{ ...inputProps }}
                     size="small"
                     label="Target"
                     name="target"
@@ -111,6 +120,7 @@ export function FormAddCoin({
                     required
                     size="small"
                     type="number"
+                    inputProps={{ ...inputProps }}
                     label="Buy back"
                     name="buyBack"
                     value={buyBack}

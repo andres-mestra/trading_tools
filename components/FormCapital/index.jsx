@@ -7,6 +7,13 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { useDecimal } from 'hooks/useDecimal'
 
+const inputProps = {
+  inputMode: 'numeric',
+  min: 0,
+  step: 'any',
+  autoComplete: 'off',
+}
+
 export const FormCapital = ({ open, coin, onClose }) => {
   const { div, abs, sub, mul } = useDecimal()
   const [values, setValues] = useState({
@@ -59,12 +66,7 @@ export const FormCapital = ({ open, coin, onClose }) => {
             <TextField
               required
               type="number"
-              inputProps={{
-                inputmode: 'numeric',
-                min: 0,
-                step: 'any',
-                autocomplete: 'off',
-              }}
+              inputProps={{ ...inputProps }}
               size="small"
               label="Perdida (usd)"
               name="coins"

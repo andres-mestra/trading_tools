@@ -119,11 +119,13 @@ export function OraculoApp({
             </Button>
           </Stack>
 
-          <FormCapital
-            open={toggleCapital}
-            coin={currentCoin}
-            onClose={() => setToggleCapital(false)}
-          />
+          {toggleCapital && (
+            <FormCapital
+              open={toggleCapital}
+              coin={currentCoin}
+              onClose={() => setToggleCapital(false)}
+            />
+          )}
 
           <FormAddCoin
             open={openForm}
