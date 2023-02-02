@@ -3,6 +3,7 @@ import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 import Backdrop from '@mui/material/Backdrop'
+import Divider from '@mui/material/Divider'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { useDecimal } from 'hooks/useDecimal'
@@ -63,31 +64,44 @@ export const FormCapital = ({ open, coin, onClose }) => {
                 {coin.type}
               </Typography>
             </Typography>
-            <TextField
-              required
-              type="number"
-              inputProps={{ ...inputProps }}
-              size="small"
-              label="Perdida (usd)"
-              name="coins"
-              value={values.loss}
-              onChange={(e) => onChangeLoss(e.target.value)}
-            />
+            <Stack
+              flexDirection="row"
+              justifyContent="space-between"
+              gap={2}
+              width="100%"
+            >
+              <TextField
+                required
+                type="number"
+                inputProps={{ ...inputProps }}
+                size="small"
+                label="Perdida (usd)"
+                name="coins"
+                value={values.loss}
+                onChange={(e) => onChangeLoss(e.target.value)}
+              />
+              <Button variant="outlined" type="submit">
+                Calcular
+              </Button>
+            </Stack>
             <Typography>
               Cantidad de monedas: {values.coins} (${cost()})
             </Typography>
+            <Divider />
+            <Typography>Precio de entrada: {coin?.entry}</Typography>
             <Stack
               flexDirection="row"
               justifyContent="space-between"
               width="100%"
             >
-              <Button variant="outlined" type="submit">
-                Calcular
-              </Button>
-              <Button variant="outlined" color="error" onClick={handleClose}>
-                Cerrar
-              </Button>
+              <Typography>SL: {coin?.buyBack}</Typography>
+              <Typography>TP: {coin?.target}</Typography>
             </Stack>
+
+            <Divider />
+            <Button variant="outlined" color="error" onClick={handleClose}>
+              Cerrar
+            </Button>
           </Stack>
         </form>
       </Paper>
