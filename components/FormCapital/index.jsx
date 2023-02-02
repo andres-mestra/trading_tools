@@ -88,14 +88,14 @@ export const FormCapital = ({ open, coin, onClose }) => {
               Cantidad de monedas: {values.coins} (${cost()})
             </Typography>
             <Divider />
-            <Typography>Precio de entrada: {coin?.entry}</Typography>
+            <Typography>Entrada: {coin?.entry}</Typography>
             <Stack
               flexDirection="row"
               justifyContent="space-between"
               width="100%"
             >
-              <Typography>SL: {coin?.buyBack}</Typography>
-              <Typography>TP: {coin?.target}</Typography>
+              <Typography>StopLoss: {coin?.buyBack}</Typography>
+              <Typography>TaketProfit: {coin?.target}</Typography>
             </Stack>
 
             <Divider />

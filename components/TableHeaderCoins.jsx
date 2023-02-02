@@ -6,10 +6,10 @@ export const TableHeaderCoins = memo(({ isLong = true }) => {
     <TableHead>
       <TableRow>
         <TableCell>
-          <Typography fontWeight="bold">Symbol</Typography>
+          <Typography fontWeight="bold">Ticket</Typography>
           <Typography variant="caption">Ratio</Typography>
         </TableCell>
-        <TableCell align="right">LastPrice</TableCell>
+        <TableCell align="right">PrecioActual</TableCell>
         <TableCell align="right">
           <Typography
             variant="subtitle2"
@@ -18,9 +18,9 @@ export const TableHeaderCoins = memo(({ isLong = true }) => {
             Dist(%)
           </Typography>
         </TableCell>
-        <TableCell align="right">Entry</TableCell>
-        <TableCell align="right">Target</TableCell>
-        <TableCell align="right">BuyBack</TableCell>
+        <TableCell align="right">Entrada</TableCell>
+        <TableCell align="right">TakeProfit</TableCell>
+        <TableCell align="right">StopLoss</TableCell>
         <TableCell align="right">Acciones</TableCell>
       </TableRow>
     </TableHead>
