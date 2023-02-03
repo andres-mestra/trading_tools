@@ -1,16 +1,5 @@
-import {
-  Link,
-  Stack,
-  Tooltip,
-  IconButton,
-  TableRow,
-  TableCell,
-  Typography,
-} from '@mui/material'
-import DeleteIcon from '@mui/icons-material/Delete'
-import ModeEditIcon from '@mui/icons-material/ModeEdit'
-import RestartAltIcon from '@mui/icons-material/RestartAlt'
-import CalculateIcon from '@mui/icons-material/Calculate'
+import { Link, Stack, TableRow, TableCell, Typography } from '@mui/material'
+import { TableCoinsItemActions } from './TableCoinsItemActions'
 
 import { useDecimal } from 'hooks/useDecimal'
 import { distanceColor } from 'helpers/distanceUtils'
@@ -47,8 +36,17 @@ export function TableCoinsItem({
           <Link target="_blank" href={url}>
             <Typography textTransform="uppercase">{symbol}</Typography>
           </Link>
-          <Typography variant="caption" color={ratio > 1.66 && '#d500f9'}>
+          <Typography
+            variant="caption"
+            color={ratio > 1.66 && 'secondary.light'}
+          >
             {ratio.toPrecision(3)}
+          </Typography>
+          <Typography
+            variant="caption"
+            color={coin?.distTarget > 1.8 && 'primary.light'}
+          >
+            {coin?.distTarget?.toPrecision(3)}
           </Typography>
         </Stack>
       </TableCell>
@@ -66,24 +64,12 @@ export function TableCoinsItem({
       <TableCell align="right">{buyBack}</TableCell>
 
       <TableCell align="right">
-        <div className="item_actions">
-          <IconButton color="primary" size="small" onClick={onEdit}>
-            <ModeEditIcon />
-          </IconButton>
-          <IconButton color="error" size="small" onClick={onDelete}>
-            <DeleteIcon />
-          </IconButton>
-          <Tooltip title="Calcular capital">
-            <IconButton color="secondary" size="small" onClick={onInvertion}>
-              <CalculateIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Recalcular entrada">
-            <IconButton color="inherit" size="small" onClick={onUpdate}>
-              <RestartAltIcon />
-            </IconButton>
-          </Tooltip>
-        </div>
+        <TableCoinsItemActions
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onInvertion={onInvertion}
+          onUpdate={onUpdate}
+        />
       </TableCell>
     </TableRow>
   )

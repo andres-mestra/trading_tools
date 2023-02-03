@@ -1,13 +1,26 @@
 import { memo } from 'react'
-import { TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import {
+  Stack,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material'
 
 export const TableHeaderCoins = memo(({ isLong = true }) => {
   return (
     <TableHead>
       <TableRow>
         <TableCell>
-          <Typography fontWeight="bold">Ticket</Typography>
-          <Typography variant="caption">Ratio</Typography>
+          <Stack>
+            <Typography fontWeight="bold">Ticket</Typography>
+            <Typography variant="caption" color="secondary.light">
+              Ratio
+            </Typography>
+            <Typography variant="caption" color="primary.light">
+              Dist Tp
+            </Typography>
+          </Stack>
         </TableCell>
         <TableCell align="right">PrecioActual</TableCell>
         <TableCell align="right">

@@ -130,27 +130,31 @@ export function useOraculoApp(longKeyStorage, shortKeyStorage) {
     onGetTwoToOne(onLoadingCoin)
       .then((points) => {
         let [longs, shorts] = points
-        longs = longs.map(({ symbol, entry, target, buyBack }) => ({
+        longs = longs.map(({ symbol, entry, target, buyBack, distTarget }) => ({
           symbol,
           entry,
           target,
           buyBack,
+          distTarget,
           type: 'long',
           bounces: 0,
           lastPrice: 1,
           distanceEntry: 1,
         }))
 
-        shorts = shorts.map(({ symbol, entry, target, buyBack }) => ({
-          symbol,
-          entry,
-          target,
-          buyBack,
-          type: 'short',
-          bounces: 0,
-          lastPrice: 1,
-          distanceEntry: 1,
-        }))
+        shorts = shorts.map(
+          ({ symbol, entry, target, buyBack, distTarget }) => ({
+            symbol,
+            entry,
+            target,
+            buyBack,
+            distTarget,
+            type: 'short',
+            bounces: 0,
+            lastPrice: 1,
+            distanceEntry: 1,
+          })
+        )
 
         setSetterPosition('long')(() => [...longs])
         setSetterPosition('short')(() => [...shorts])

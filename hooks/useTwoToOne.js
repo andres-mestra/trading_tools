@@ -2,6 +2,9 @@ import { useDecimal } from './useDecimal'
 import { useOrderBook } from './useOrderBook'
 import { getSymbols } from 'services/binanceService'
 
+const RATIO = 2
+const DISTANCE = 1.66
+
 export function useTwoToOne() {
   const { abs, sub, div, mul } = useDecimal()
   const [getEntryPoints] = useOrderBook()
@@ -27,13 +30,13 @@ export function useTwoToOne() {
           sub(shortPoints.buyBack, shortPoints.entry)
         )
 
-        if (ratioLong >= 2) {
+        if (ratioLong >= RATION) {
           const distance = mul(
             div(sub(shortPoints.entry, longPoints.entry), longPoints.entry),
             100
           )
 
-          if (distance >= 1.8) {
+          if (distance >= DISTANCE) {
             const { entry, buyBack } = longPoints
             longs.push({
               symbol,
@@ -41,12 +44,13 @@ export function useTwoToOne() {
               target: shortPoints.entry,
               buyBack,
               distance,
+              distTarget: distance,
               ratio: ratioLong,
             })
           }
         }
 
-        if (ratioShort >= 2) {
+        if (ratioShort >= RATIO) {
           const distance = mul(
             div(
               abs(sub(longPoints.entry, shortPoints.entry)),
@@ -55,7 +59,7 @@ export function useTwoToOne() {
             100
           )
 
-          if (distance >= 1.8) {
+          if (distance >= DISTANCE) {
             const { entry, buyBack } = shortPoints
             shorts.push({
               symbol,
@@ -63,6 +67,7 @@ export function useTwoToOne() {
               target: longPoints.entry,
               buyBack,
               distance,
+              distTarget: distance,
               ratio: ratioShort,
             })
           }
