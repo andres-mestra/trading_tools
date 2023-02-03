@@ -95,7 +95,7 @@ export const FormCapital = ({ open, coin, onClose }) => {
               width="100%"
             >
               <Typography>StopLoss: {coin?.buyBack}</Typography>
-              <Typography>TaketProfit: {coin?.target}</Typography>
+              <Typography>TakeProfit: {coin?.target}</Typography>
             </Stack>
 
             <Divider />
