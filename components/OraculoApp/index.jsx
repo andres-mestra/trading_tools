@@ -33,6 +33,7 @@ export function OraculoApp({
     onEditCoin,
     onDeleteCoin,
     onActiveNotify,
+    onUpdatePoints,
     onSetCurrentCoin,
     handleCloseForm,
     handleSubmitForm,

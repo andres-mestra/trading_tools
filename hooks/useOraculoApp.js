@@ -268,6 +268,7 @@ export function useOraculoApp(longKeyStorage, shortKeyStorage) {
     onEditCoin,
     onDeleteCoin,
     onActiveNotify,
+    onUpdatePoints,
     handleAddCoin,
     handleCloseForm,
     handleSubmitForm,
