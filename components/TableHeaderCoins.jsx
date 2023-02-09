@@ -14,10 +14,10 @@ export const TableHeaderCoins = memo(({ isLong = true }) => {
         <TableCell>
           <Stack>
             <Typography fontWeight="bold">Ticket</Typography>
-            <Typography variant="caption" color="secondary.light">
+            <Typography variant="caption" color="secondary.main">
               Ratio
             </Typography>
-            <Typography variant="caption" color="primary.light">
+            <Typography variant="caption" color="primary.main">
               Dist Tp
             </Typography>
           </Stack>

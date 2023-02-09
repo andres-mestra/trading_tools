@@ -38,13 +38,13 @@ export function TableCoinsItem({
           </Link>
           <Typography
             variant="caption"
-            color={ratio > 1.66 && 'secondary.light'}
+            color={ratio > 1.66 && 'secondary.main'}
           >
             {ratio.toPrecision(3)}
           </Typography>
           <Typography
             variant="caption"
-            color={coin?.distTarget > 1.8 && 'primary.light'}
+            color={coin?.distTarget > 1.8 && 'primary.main'}
           >
             {coin?.distTarget?.toPrecision(3)}
           </Typography>
