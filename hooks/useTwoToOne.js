@@ -3,7 +3,7 @@ import { useOrderBook } from './useOrderBook'
 import { getSymbols } from 'services/binanceService'
 
 const RATIO = 2
-const DISTANCE = 1.66
+const DISTANCE = 1
 
 export function useTwoToOne() {
   const { abs, sub, div, mul } = useDecimal()
