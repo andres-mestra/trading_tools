@@ -6,7 +6,7 @@ import { WidgetItem } from './WidgetItem'
 
 import './style.css'
 
-const TIME_INTERVAL = 300000 // 5 minutes
+const TIME_INTERVAL = 180000 // 5 minutes
 
 export const MarketWidget = () => {
   const [coins, setCoins] = useState([])
