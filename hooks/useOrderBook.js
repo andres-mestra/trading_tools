@@ -3,10 +3,6 @@ import { useDecimal } from './useDecimal'
 import { getCurrentPrice, getOrderBook } from 'services/binanceService'
 import { calcRange } from 'helpers/calcRange'
 
-const ETH_SYMBOL = 'eth'
-const ETH_RANGE_EXT = 50
-const ETH_RANGE_INT = 10
-
 export const useOrderBook = () => {
   const isGetData = useRef(false)
   const { div, sub, mul, plus, asNumber } = useDecimal()
@@ -122,12 +118,8 @@ export const useOrderBook = () => {
 
   function getPositionsPoints(type, price, orderBook, symbol) {
     // EXTERNAL
-    const sizeIntervalExt =
-      symbol === ETH_SYMBOL ? ETH_RANGE_EXT : calcRange(price, 'external')
-    const sizeIntervalInt =
-      symbol === ETH_SYMBOL
-        ? ETH_RANGE_INT
-        : calcRange(sizeIntervalExt, 'internal')
+    const sizeIntervalExt = calcRange(price, 'external')
+    const sizeIntervalInt = calcRange(sizeIntervalExt, 'internal')
     const minPrice = asNumber(orderBook[0][0])
 
     const [firtsLimitExternal] = getLocalLimit(minPrice, price, sizeIntervalExt)
