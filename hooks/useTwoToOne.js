@@ -10,12 +10,13 @@ export function useTwoToOne() {
   const [getEntryPoints] = useOrderBook()
 
   const handleGetTwoToOne = async (callbackCurrentCoin) => {
-    const newSymbols = await getSymbols()
+    const respSymbols = await getSymbols()
+    const symbols = structuredClone(respSymbols?.reverse() || [])
 
     const longs = []
     const shorts = []
 
-    for (const symbol of newSymbols) {
+    for (const symbol of symbols) {
       callbackCurrentCoin(symbol)
       const points = await getEntryPoints(symbol, 'all')
       if (points !== undefined) {
