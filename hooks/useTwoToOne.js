@@ -30,13 +30,15 @@ export function useTwoToOne() {
           sub(shortPoints.buyBack, shortPoints.entry)
         )
 
-        if (ratioLong >= RATIO) {
+        const isBTC = symbol === 'btc'
+
+        if (ratioLong >= RATIO || isBTC) {
           const distance = mul(
             div(sub(shortPoints.entry, longPoints.entry), longPoints.entry),
             100
           )
 
-          if (distance >= DISTANCE) {
+          if (distance >= DISTANCE || isBTC) {
             const { entry, buyBack } = longPoints
             longs.push({
               symbol,
@@ -50,7 +52,7 @@ export function useTwoToOne() {
           }
         }
 
-        if (ratioShort >= RATIO) {
+        if (ratioShort >= RATIO || isBTC) {
           const distance = mul(
             div(
               abs(sub(longPoints.entry, shortPoints.entry)),
@@ -59,7 +61,7 @@ export function useTwoToOne() {
             100
           )
 
-          if (distance >= DISTANCE) {
+          if (distance >= DISTANCE || isBTC) {
             const { entry, buyBack } = shortPoints
             shorts.push({
               symbol,
