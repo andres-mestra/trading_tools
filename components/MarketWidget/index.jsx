@@ -3,10 +3,11 @@ import { useEffect, useRef, useState } from 'react'
 import { useDecimal } from 'hooks/useDecimal'
 import { getCandles, getSymbols } from 'services/binanceService'
 import { WidgetItem } from './WidgetItem'
+import { WidgetBtc } from './WidgetBtc'
 
 import './style.css'
 
-const TIME_INTERVAL = 180000 // 5 minutes
+const TIME_INTERVAL = 180000 // 3 minutes
 
 export const MarketWidget = () => {
   const [coins, setCoins] = useState([])
@@ -58,11 +59,14 @@ export const MarketWidget = () => {
     <div className="widget_container">
       <div className="widget_line_container">
         {coins?.length ? (
-          <ol key="widget_marquee" className="widget_line">
-            {coins.map(({ symbol, change }) => (
-              <WidgetItem key={symbol} symbol={symbol} change={change} />
-            ))}
-          </ol>
+          <>
+            <WidgetBtc btc={coins[0]} />
+            <ol key="widget_marquee" className="widget_line">
+              {coins.map(({ symbol, change }) => (
+                <WidgetItem key={symbol} symbol={symbol} change={change} />
+              ))}
+            </ol>
+          </>
         ) : (
           <p>Loading...</p>
         )}
