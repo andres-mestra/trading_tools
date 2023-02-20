@@ -19,7 +19,7 @@
   position: absolute;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   padding-inline: 19px;
   padding-left: 10px;
   height: 40px;
