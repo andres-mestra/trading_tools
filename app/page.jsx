@@ -1,20 +1,20 @@
 'use client'
 
 import { Alert, Button, Paper, Typography } from '@mui/material'
-import { OgtLink } from 'components/OgtLink'
-import { useAuthConext } from 'context/AuthContext'
+// import { OgtLink } from 'components/OgtLink'
+// import { useAuthConext } from 'context/AuthContext'
 
 export default function HomePage() {
-  const {
-    error,
-    active,
-    account,
-    hasMinOGT,
-    networkName,
-    connect,
-    disconnect,
-    vefiryOgtAmount,
-  } = useAuthConext()
+  // const {
+  //   error,
+  //   active,
+  //   account,
+  //   hasMinOGT,
+  //   networkName,
+  //   connect,
+  //   disconnect,
+  //   vefiryOgtAmount,
+  // } = useAuthConext()
 
   return (
     <Paper className="container_paper" sx={{ textAlign: 'center' }}>
@@ -24,7 +24,7 @@ export default function HomePage() {
       <Typography variant="h3" fontWeight="bold">
         Spartans
       </Typography>
-      {active ? (
+      {/* {active ? (
         <>
           <Button variant="outlined" onClick={disconnect}>
             Desconectar wallet
@@ -56,7 +56,7 @@ export default function HomePage() {
           </Alert>
           {error && <Alert severity="error">{error.message}</Alert>}
         </>
-      )}
+      )} */}
     </Paper>
   )
 }

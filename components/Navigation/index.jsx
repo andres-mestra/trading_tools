@@ -13,7 +13,7 @@ import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined'
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined'
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined'
 import { ToggleThemeMode } from 'components/ToggleThemeMode'
-import { useAuthConext } from 'context/AuthContext'
+//import { useAuthConext } from 'context/AuthContext'
 
 const routes = [
   { route: '/', text: 'Home', Icon: HomeIcon },
@@ -22,11 +22,11 @@ const routes = [
 ]
 
 export function Navigation({ onToggle }) {
-  const { active, connect, disconnect } = useAuthConext()
+  // const { active, connect, disconnect } = useAuthConext()
 
-  const handleAuth = () => {
-    active ? disconnect() : connect()
-  }
+  // const handleAuth = () => {
+  //   active ? disconnect() : connect()
+  // }
 
   return (
     <Box
@@ -50,7 +50,7 @@ export function Navigation({ onToggle }) {
         ))}
         <Divider />
         <ToggleThemeMode />
-        <ListItem disablePadding>
+        {/* <ListItem disablePadding>
           <ListItemButton onClick={handleAuth}>
             <ListItemIcon>
               {active ? (
@@ -63,7 +63,7 @@ export function Navigation({ onToggle }) {
               primary={active ? 'Desconectar wallet' : 'Conectar wallet'}
             />
           </ListItemButton>
-        </ListItem>
+        </ListItem> */}
       </List>
     </Box>
   )
