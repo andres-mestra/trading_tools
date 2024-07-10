@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
         <Providers>
           <NavBar />
           {children}
-          <MarketWidget />
+          {/* <MarketWidget /> */}
         </Providers>
       </body>
     </html>

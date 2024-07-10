@@ -9,11 +9,13 @@ import { useDecimal } from 'hooks/useDecimal'
 import { useImportExportJson } from 'hooks/useImportExportJson'
 import { useTwoToOne } from 'hooks/useTwoToOne'
 import { useNotify } from 'hooks/useNotify'
-import { binanceSocketURL } from 'services/binanceService'
+import { binanceSocketURL, getVolume } from 'services/binanceService'
+import { useFormatterCurrency } from './useFormatterCurrency'
 
 export function useOraculoApp(longKeyStorage, shortKeyStorage) {
   const socketsRef = useRef([])
   const [getEntryPoints] = useOrderBook()
+  const formatterCurrency = useFormatterCurrency('en-US', 'USD')
   const [loading, setLoading] = useState(null)
   const [openForm, setOpenForm] = useState(false)
   const [shortsStorage, setShortsStorage] = useLocalStorage(shortKeyStorage, [])
@@ -127,10 +129,15 @@ export function useOraculoApp(longKeyStorage, shortKeyStorage) {
   }
 
   const handleGetTwoToOne = async () => {
-    onGetTwoToOne(onLoadingCoin)
-      .then((points) => {
-        let [longs, shorts] = points
-        longs = longs.map(({ symbol, entry, target, buyBack, distTarget }) => ({
+    try {
+      const points = await onGetTwoToOne(onLoadingCoin)
+      let [longs, shorts] = points
+
+      const volumeLongs = await Promise.allSettled(
+        longs.map(({ symbol }) => getVolume(symbol))
+      )
+      longs = longs.map(
+        ({ symbol, entry, target, buyBack, distTarget }, index) => ({
           symbol,
           entry,
           target,
@@ -140,31 +147,39 @@ export function useOraculoApp(longKeyStorage, shortKeyStorage) {
           bounces: 0,
           lastPrice: 1,
           distanceEntry: 1,
-        }))
+          volumen: formatterCurrency(volumeLongs?.[index]?.value || -1),
+        })
+      )
 
-        shorts = shorts.map(
-          ({ symbol, entry, target, buyBack, distTarget }) => ({
-            symbol,
-            entry,
-            target,
-            buyBack,
-            distTarget,
-            type: 'short',
-            bounces: 0,
-            lastPrice: 1,
-            distanceEntry: 1,
-          })
-        )
+      const volumeShorts = await Promise.allSettled(
+        longs.map(({ symbol }) => getVolume(symbol))
+      )
+      shorts = shorts.map(
+        ({ symbol, entry, target, buyBack, distTarget }, index) => ({
+          symbol,
+          entry,
+          target,
+          buyBack,
+          distTarget,
+          type: 'short',
+          bounces: 0,
+          lastPrice: 1,
+          distanceEntry: 1,
+          volumen: formatterCurrency(volumeShorts?.[index]?.value || -1),
+        })
+      )
 
-        setSetterPosition('long')(() => [...longs])
-        setSetterPosition('short')(() => [...shorts])
-        setStoragePosition('long')(() => [...longs])
-        setStoragePosition('short')(() => [...shorts])
-      })
-      .finally(() => {
-        setLoading(null)
-        onNotify('Finalizo el análisis dos a uno')
-      })
+      setSetterPosition('long')(() => [...longs])
+      setSetterPosition('short')(() => [...shorts])
+      setStoragePosition('long')(() => [...longs])
+      setStoragePosition('short')(() => [...shorts])
+    } catch (error) {
+      console.error('DOS_A_UNO:ERROR ', error)
+      onNotify('Error al obtener dos a uno')
+    } finally {
+      setLoading(null)
+      onNotify('Finalizo el análisis dos a uno')
+    }
   }
 
   const onAlert = (notify, distanceEntry, message) => {

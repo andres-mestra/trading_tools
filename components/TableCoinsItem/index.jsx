@@ -48,6 +48,12 @@ export function TableCoinsItem({
           >
             {coin?.distTarget?.toPrecision(3)}
           </Typography>
+          <Typography
+            variant="caption"
+            color="primary.main"
+          >
+            VOL: {coin?.volumen}
+          </Typography>
         </Stack>
       </TableCell>
       <TableCell align="right">{lastPrice.toPrecision(7)}</TableCell>

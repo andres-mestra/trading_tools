@@ -1,20 +1,21 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { useDecimal } from 'hooks/useDecimal'
-import { getCandles, getSymbols } from 'services/binanceService'
+import { PERIOD, getCandles, getSymbols } from 'services/binanceService'
 import { WidgetItem } from './WidgetItem'
 import { WidgetBtc } from './WidgetBtc'
 
 import './style.css'
 
 const TIME_INTERVAL = 180000 // 3 minutes
+const N_CANDLES = 6
 
 export const MarketWidget = () => {
   const [coins, setCoins] = useState([])
   const { div, mul, sub } = useDecimal()
 
   async function getTicketChange(symbol) {
-    const candles = await getCandles(symbol, '5m', 6)
+    const candles = await getCandles(symbol, PERIOD['5m'], N_CANDLES)
     const [pastCandle] = candles.slice(0, 1)
     const [currentCandle] = candles.slice(-1)
 
