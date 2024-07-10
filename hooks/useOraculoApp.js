@@ -152,7 +152,7 @@ export function useOraculoApp(longKeyStorage, shortKeyStorage) {
       )
 
       const volumeShorts = await Promise.allSettled(
-        longs.map(({ symbol }) => getVolume(symbol))
+        shorts.map(({ symbol }) => getVolume(symbol))
       )
       shorts = shorts.map(
         ({ symbol, entry, target, buyBack, distTarget }, index) => ({
